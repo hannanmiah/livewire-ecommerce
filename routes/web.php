@@ -1,8 +1,58 @@
 <?php
 
+use App\Models\Banner;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', function () {
+    $heroBanners = Banner::where('category', 'home')
+        ->where('position', 'hero')
+        ->whereNotNull('featured_at')
+        ->where('featured_at', '<=', now())
+        ->with('media')
+        ->orderBy('featured_at', 'desc')
+        ->get();
+
+    $featuredCategories = Category::whereNotNull('featured_at')
+        ->where('featured_at', '<=', now())
+        ->withCount('products')
+        ->orderBy('featured_at', 'desc')
+        ->get();
+
+    $featuredProducts = Product::with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+        ->available()
+        ->featured()
+        ->latest()
+        ->take(8)
+        ->get();
+
+    $newArrivals = Product::with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+        ->available()
+        ->latest()
+        ->take(8)
+        ->get();
+
+    $featuredBrands = Brand::whereNotNull('featured_at')
+        ->where('featured_at', '<=', now())
+        ->withCount('products')
+        ->orderBy('featured_at', 'desc')
+        ->get();
+
+    $sectionalBanners = Banner::where('category', 'home')
+        ->whereIn('position', ['home_top', 'home_middle', 'home_bottom'])
+        ->whereNotNull('featured_at')
+        ->where('featured_at', '<=', now())
+        ->with('media')
+        ->get()
+        ->keyBy('position');
+
+    return view('welcome', compact(
+        'heroBanners', 'featuredCategories', 'featuredProducts',
+        'newArrivals', 'featuredBrands', 'sectionalBanners'
+    ));
+})->name('home');
 
 // Product Listing
 Route::livewire('/products', 'pages.products.index')->name('products.index');

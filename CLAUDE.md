@@ -185,26 +185,28 @@ This is a single vendor ecommerce application built with Laravel 13, Livewire 4 
 
 **DB Schema:**
 - users table (default Laravel users table with Fortify fields), add phone, role (admin,editor,customer) columns
-- Categories table
+- Categories table migration
 ```php
 Schema::create('categories', function (Blueprint $table) {
     $table->id();
     $table->string('name');
     $table->string('slug')->unique();
     $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
+    $table->dateTime('featured_at')->nullable(); // for model boolean accessor is_featured
     $table->timestamps();
 });
 ```
-- Brands table
+- Brands table migration
 ```php
 Schema::create('brands', function (Blueprint $table) {
     $table->id();
     $table->string('name');
     $table->string('slug')->unique();
+    $table->dateTime('featured_at')->nullable(); // for model boolean accessor is_featured
     $table->timestamps();
 });
 ```
-- Products table
+- Products table migration
 ```php
 Schema::create('products', function (Blueprint $table) {
     $table->id();
@@ -213,9 +215,10 @@ Schema::create('products', function (Blueprint $table) {
     $table->string('name');
     $table->string('slug')->unique();
     $table->text('description')->nullable();
-    $table->string('brand')->nullable();
-    $table->boolean('status')->default(true);
+    $table->dateTime('featured_at')->nullable(); // for model boolean accessor is_featured
+    $table->dateTime('available_at')->nullable(); // is_available accessor
     $table->timestamps();
+    // thumbnail and gallery images will be handled by spatie/laravel-medialibrary, so no need for image fields here
 });
 // many to many product_category pivot table
 Schema::create('category_product', function (Blueprint $table) {
@@ -225,7 +228,7 @@ Schema::create('category_product', function (Blueprint $table) {
     $table->primary(['category_id', 'product_id']);
 });
 ```
-- Attribute table
+- Attribute table migration
 ```php
 Schema::create('attributes', function (Blueprint $table) {
     $table->id();
@@ -233,7 +236,7 @@ Schema::create('attributes', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Attribute Values table
+- Attribute Values table migration
 ```php
 Schema::create('attribute_values', function (Blueprint $table) {
     $table->id();
@@ -242,7 +245,7 @@ Schema::create('attribute_values', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Product Variants table
+- Product Variants table migration
 ```php
 Schema::create('product_variants', function (Blueprint $table) {
     $table->id();
@@ -261,7 +264,7 @@ Schema::create('variant_attribute_value', function (Blueprint $table) {
     $table->primary(['variant_id', 'attribute_value_id']);
 });
 ```
-- Stocks table
+- Stocks table migration
 ```php
 Schema::create('stocks', function (Blueprint $table) {
     $table->id();
@@ -271,7 +274,7 @@ Schema::create('stocks', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Coupons table
+- Coupons table migration
 ```php
 Schema::create('coupons', function (Blueprint $table) {
     $table->id();
@@ -288,7 +291,7 @@ Schema::create('coupons', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Addresses table
+- Addresses table migration
 ```php
 Schema::create('addresses', function (Blueprint $table) {
     $table->id();
@@ -302,7 +305,7 @@ Schema::create('addresses', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Orders table
+- Orders table migration
 ```php
 Schema::create('orders', function (Blueprint $table) {
     $table->id();
@@ -324,7 +327,7 @@ Schema::create('orders', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Order Items table
+- Order Items table migration
 ```php
 Schema::create('order_items', function (Blueprint $table) {
     $table->id();
@@ -342,13 +345,13 @@ Schema::create('order_items', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Shipments table
+- Shipments table migration
 ```php
 Schema::create('payments', function (Blueprint $table) {
     $table->id();
     $table->foreignId('order_id')->constrained()->cascadeOnDelete();
 
-    $table->string('method');
+    $table->string('method'); // e.g. card, bkash, bank, cash etc.
     $table->decimal('amount', 10, 2);
 
     $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
@@ -359,7 +362,7 @@ Schema::create('payments', function (Blueprint $table) {
 });
 ```
 
-- Coupon usages table
+- Coupon usages table migration (to track which user used which coupon in which order, for enforcing usage limits and showing usage history)
 ```php
 Schema::create('coupon_usages', function (Blueprint $table) {
     $table->id();
@@ -370,7 +373,7 @@ Schema::create('coupon_usages', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Carts table
+- Carts table migration
 ```php
 Schema::create('carts', function (Blueprint $table) {
     $table->id();
@@ -386,7 +389,7 @@ Schema::create('carts', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Cart Items table
+- Cart Items table migration
 ```php
 Schema::create('cart_items', function (Blueprint $table) {
     $table->id();
@@ -400,7 +403,7 @@ Schema::create('cart_items', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- Reviews table
+- Reviews table migration
 ```php
 Schema::create('reviews', function (Blueprint $table) {
     $table->id();
@@ -411,6 +414,21 @@ Schema::create('reviews', function (Blueprint $table) {
     $table->text('comment')->nullable();
 
     $table->timestamps();
+});
+```
+- Banners table migration
+```php
+Schema::create('banners', function (Blueprint $table) {
+    $table->id();
+    $table->string('category'); // e.g. home, sidebar, product, etc.
+    $table->string('title');
+    $table->string('slug')->unique();
+    $table->string('link')->nullable();
+    $table->text('description')->nullable();
+    $table->string('position')->nullable(); // for banner positioning and ordering in the frontend. e.g. home_top, home_middle, home_bottom, sidebar_top, sidebar_bottom, etc.
+    $table->dateTime('featured_at')->nullable(); // for model boolean accessor is_featured
+    $table->timestamps();
+    // image will be handled by spatie/laravel-medialibrary, so no need for image fields here
 });
 ```
 - Media table (for spatie/laravel-medialibrary): publish the migration
@@ -440,6 +458,7 @@ Schema::create('reviews', function (Blueprint $table) {
 - Use spatie/laravel-medialibrary for media management (product images, etc.)
 - Use staudenmeir/laravel-adjacency-list for category parent-child relationships
 - Use cviebrock/eloquent-sluggable for generating slugs from names (products, categories, brands)
+- use wildside/userstamps for adding `$table->userstamps()` to tables where tracking which user created/updated records is useful (e.g. products, orders, coupons, etc.). add this column to the relevant tables and use the `Userstamps` trait in the corresponding models.
 
 **Coding Standards / Guidelines:**
 - Follow laravel 13 best practices for controllers, models, migrations, factories, seeders, and tests.
@@ -462,6 +481,7 @@ Schema::create('reviews', function (Blueprint $table) {
     - category and brand management
     - order management (view orders, update status, manage shipments)
     - coupon management
+    - banner management
     - user management (view users, manage roles)
 - public features:
     - product listing with filtering by category, brand, attributes, and search
@@ -474,3 +494,20 @@ Schema::create('reviews', function (Blueprint $table) {
     - for payment just use a simple form to simulate payment and update order/payment status accordingly, no need to integrate real payment gateway for this project
     - order history and details for customers (users) with a simple customer dashboard for customer management of orders, addresses, and reviews
     - product reviews with rating and comment
+
+- Home Page:
+    - Add a banner slider (multiple banners with category "home" and position "hero"), add others single banner (`featured_at` filter with `home` category) in different sections (e.g. top, middle, bottom etc.) 
+    - New arrivals (latest products by created_at and only available)
+    - Featured products (products with `featured_at` and only available)
+    - latest featured category and brand products (with `featured_at` filter in latest order)
+    - Nabvar has Search bar for products, featured categories, and links to cart and customer dashboard / (login/register)
+    - Clicking cart shows a dropdown with cart items and total, and a link to the cart page
+    - Footer with links to featured categories, brands, and other pages (about us, contact, etc.)
+- Product Listing Page (/products or /category/{slug} or /brand/{slug}):
+    - List products with pagination
+    - Filters for category, brand, attributes (e.g. size, color), price range, and search
+    - Sorting options (newest, price low to high, price high to low)
+- Product Detail Page (/product/{slug}):
+    - Show product details, images, price, variants, and reviews
+    - Allow selecting variants (e.g. size/color) and adding to cart or buying directly
+    - Show related products based on the same category or brand

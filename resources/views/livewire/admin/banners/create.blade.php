@@ -59,7 +59,6 @@ new #[Title('Create Banner')] class extends Component {
         $this->redirect(route('admin.banners.edit', $banner), navigate: true);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Create Banner')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

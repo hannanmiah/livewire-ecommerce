@@ -47,7 +47,6 @@ new #[Title('Create Coupon')] class extends Component {
         $this->redirect(route('admin.coupons.edit', $coupon), navigate: true);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Create Coupon')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

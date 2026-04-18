@@ -31,7 +31,6 @@ new #[Title('Create Brand')] class extends Component {
 };
 
 ?>
-
 <x-layouts::admin :title="__('Create Brand')">
     <flux:main>
         <div class="flex items-center gap-4">

@@ -41,7 +41,6 @@ new #[Title('Create Category')] class extends Component {
         $this->redirect(route('admin.categories.edit', $category), navigate: true);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Create Category')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

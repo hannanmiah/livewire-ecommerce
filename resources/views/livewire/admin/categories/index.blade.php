@@ -30,7 +30,6 @@ new #[Title('Categories')] class extends Component {
         unset($this->categories);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Categories')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

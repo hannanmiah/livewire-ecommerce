@@ -433,7 +433,6 @@ Schema::create('banners', function (Blueprint $table) {
 ```
 - Media table (for spatie/laravel-medialibrary): publish the migration
 
-
 **Relationships:**
 - User: hasMany Orders, Addresses, Reviews, CouponUsages
 - Category: hasMany Products, belongsTo parent Category, hasMany child Categories

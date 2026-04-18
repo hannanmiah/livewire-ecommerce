@@ -43,7 +43,6 @@ new #[Title('Brands')] class extends Component {
 };
 
 ?>
-
 <x-layouts::admin :title="__('Brands')">
     <flux:main>
         <div class="flex items-center justify-between">

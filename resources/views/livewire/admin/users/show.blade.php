@@ -23,7 +23,6 @@ new #[Title('User Details')] class extends Component {
         Flux::toast(variant: 'success', text: __('User role updated.'));
     }
 }; ?>
-
 <x-layouts::admin :title="__('User: :name', ['name' => $user->name])">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

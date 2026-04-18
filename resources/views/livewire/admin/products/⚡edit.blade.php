@@ -70,7 +70,7 @@ new #[Title('Edit Product')] class extends Component {
     }
 
     #[Computed]
-    public function attributes()
+    public function productAttributes()
     {
         return Attribute::with('values')->get();
     }
@@ -231,7 +231,6 @@ new #[Title('Edit Product')] class extends Component {
         $this->redirect(route('admin.products.index'), navigate: true);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Edit Product')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">
@@ -436,11 +435,11 @@ new #[Title('Edit Product')] class extends Component {
                             <flux:field>
                                 <flux:label>{{ __('Attributes') }}</flux:label>
                                 <div class="space-y-2">
-                                    @foreach ($this->attributes as $attribute)
+                                    @foreach ($this->productAttributes as $productAttribute)
                                         <div>
-                                            <flux:text class="text-xs font-medium mb-1">{{ $attribute->name }}</flux:text>
+                                            <flux:text class="text-xs font-medium mb-1">{{ $productAttribute->name }}</flux:text>
                                             <div class="flex flex-wrap gap-2">
-                                                @foreach ($attribute->values as $value)
+                                                @foreach ($productAttribute->values as $value)
                                                     <flux:field variant="inline" class="text-sm">
                                                         <flux:checkbox wire:model="variants.{{ $index }}.attribute_value_ids" value="{{ $value->id }}" />
                                                         <flux:label>{{ $value->value }}</flux:label>

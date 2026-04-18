@@ -33,7 +33,6 @@ new #[Title('Order Details')] class extends Component {
         Flux::toast(variant: 'success', text: __('Shipping status updated.'));
     }
 }; ?>
-
 <x-layouts::admin :title="__('Order :number', ['number' => $order->order_number])">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

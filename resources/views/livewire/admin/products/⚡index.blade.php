@@ -79,7 +79,6 @@ new #[Title('Products')] class extends Component {
         unset($this->products);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Products')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

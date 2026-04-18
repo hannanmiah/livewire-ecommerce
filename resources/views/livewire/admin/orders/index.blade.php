@@ -41,7 +41,6 @@ new #[Title('Orders')] class extends Component {
             ->paginate(15);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Orders')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

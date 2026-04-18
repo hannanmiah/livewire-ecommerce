@@ -42,7 +42,6 @@ new #[Title('Banners')] class extends Component {
         unset($this->banners);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Banners')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

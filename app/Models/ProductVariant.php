@@ -61,7 +61,7 @@ class ProductVariant extends Model
      */
     public function stock(): HasOne
     {
-        return $this->hasOne(Stock::class);
+        return $this->hasOne(Stock::class, 'variant_id');
     }
 
     /**

@@ -41,7 +41,6 @@ new #[Title('Coupons')] class extends Component {
         unset($this->coupons);
     }
 }; ?>
-
 <x-layouts::admin :title="__('Coupons')">
     <flux:main>
         <div class="flex items-center justify-between mb-6">

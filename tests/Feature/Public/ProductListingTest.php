@@ -16,14 +16,14 @@ test('products page shows available products', function () {
     ProductVariant::factory()->create(['product_id' => $product->id]);
     Stock::factory()->inStock()->create(['variant_id' => $product->variants->first()->id]);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->assertSee('Visible Product');
 });
 
 test('products page does not show unavailable products', function () {
     $product = Product::factory()->unavailable()->create(['name' => 'Unavailable Product']);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->assertDontSee('Unavailable Product');
 });
 
@@ -50,7 +50,7 @@ test('products page can search by name', function () {
     $product2 = Product::factory()->create(['name' => 'Other Item ABC']);
     ProductVariant::factory()->create(['product_id' => $product2->id]);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->set('search', 'Special')
         ->assertSee('Special Item XYZ')
         ->assertDontSee('Other Item ABC');
@@ -64,7 +64,7 @@ test('products page can filter by selected brands', function () {
     $product2 = Product::factory()->create(['brand_id' => $brand2->id, 'name' => 'Brand Two Product']);
     ProductVariant::factory()->create(['product_id' => $product2->id]);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->set('selected_brands', [(string) $brand1->id])
         ->assertSee('Brand One Product')
         ->assertDontSee('Brand Two Product');
@@ -78,7 +78,7 @@ test('products page can filter by selected categories', function () {
     $product2 = Product::factory()->create(['category_id' => $category2->id, 'name' => 'Cat Two Product']);
     ProductVariant::factory()->create(['product_id' => $product2->id]);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->set('selected_categories', [(string) $category1->id])
         ->assertSee('Cat One Product')
         ->assertDontSee('Cat Two Product');
@@ -90,7 +90,7 @@ test('products page can sort by newest', function () {
     $new = Product::factory()->create(['name' => 'New Product']);
     ProductVariant::factory()->create(['product_id' => $new->id]);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->set('sort', 'newest')
         ->assertOk();
 });
@@ -100,7 +100,7 @@ test('products page can clear filters', function () {
     Product::factory()->create(['brand_id' => $brand->id, 'name' => 'Filtered']);
     Product::factory()->create(['name' => 'Unfiltered']);
 
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->set('search', 'Filtered')
         ->set('selected_brands', [(string) $brand->id])
         ->call('clearFilters')
@@ -109,7 +109,7 @@ test('products page can clear filters', function () {
 });
 
 test('products page shows empty state when no products match', function () {
-    Livewire::test('pages.products.index')
+    Livewire::test('pages::products.index')
         ->set('search', 'nonexistent-product-xyz-123')
         ->assertSee('No products found');
 });

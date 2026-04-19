@@ -1429,7 +1429,7 @@ class EnsureUserIsAdmin
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::view('/', 'admin.dashboard')->name('dashboard');
+    Route::view('/', 'admin.⚡dashboard')->name('dashboard');
 
     // Products
     Route::livewire('products', 'admin.products.index')->name('products.index');

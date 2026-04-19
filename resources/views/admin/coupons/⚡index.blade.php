@@ -9,7 +9,8 @@ use Livewire\WithPagination;
 use Flux\Flux;
 
 new #[Layout('layouts::admin')]
-#[Title('Coupons')] class extends Component {
+#[Title('Coupons')]
+class extends Component {
     use WithPagination;
 
     public string $search = '';
@@ -134,4 +135,3 @@ new #[Layout('layouts::admin')]
             </flux:table.rows>
         </flux:table>
     </flux:main>
-</flux:main>

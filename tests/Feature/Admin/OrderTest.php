@@ -9,7 +9,7 @@ test('admin can view orders index', function () {
     Order::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::orders.index'))
+        ->get(route('admin.orders.index'))
         ->assertSuccessful()
         ->assertSee('Orders');
 });
@@ -19,7 +19,7 @@ test('admin can view order detail page', function () {
     $order = Order::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::orders.show', $order))
+        ->get(route('admin.orders.show', $order))
         ->assertSuccessful()
         ->assertSee($order->order_number);
 });

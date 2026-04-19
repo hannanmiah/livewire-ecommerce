@@ -271,13 +271,13 @@ test('cart livewire component can apply coupon', function () {
     Coupon::factory()->create(['code' => 'TESTCODE', 'type' => 'fixed', 'value' => 10]);
 
     Livewire::actingAs($user)
-        ->test('pages.cart')
+        ->test('pages::cart')
         ->set('couponCode', 'TESTCODE')
         ->call('applyCoupon')
         ->assertSee('TESTCODE');
 });
 
 test('cart livewire component shows empty state', function () {
-    Livewire::test('pages.cart')
+    Livewire::test('pages::cart')
         ->assertSee('Your cart is empty');
 });

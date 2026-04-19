@@ -15,7 +15,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 
 new #[Layout('layouts::admin')]
-#[Title('Edit Product')] class extends Component {
+#[Title('Edit Product')]
+class extends Component {
     use WithFileUploads;
 
     #[Locked]
@@ -469,4 +470,3 @@ new #[Layout('layouts::admin')]
             </div>
         </form>
     </flux:main>
-</flux:main>

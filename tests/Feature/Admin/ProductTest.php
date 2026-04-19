@@ -14,7 +14,7 @@ test('admin can view products index', function () {
     Product::factory()->count(3)->create(['brand_id' => $brand->id]);
 
     $this->actingAs($admin)
-        ->get(route('admin::products.index'))
+        ->get(route('admin.products.index'))
         ->assertSuccessful()
         ->assertSee('Products');
 });
@@ -23,7 +23,7 @@ test('admin can view create product page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::products.create'))
+        ->get(route('admin.products.create'))
         ->assertSuccessful()
         ->assertSee('Create Product');
 });
@@ -43,7 +43,7 @@ test('admin can create product with variant', function () {
         ->set('variants.0.price', 29.99)
         ->set('variants.0.stock_quantity', 10)
         ->call('save')
-        ->assertRedirect(route('admin::products.index'));
+        ->assertRedirect(route('admin.products.index'));
 
     $product = Product::first();
     expect($product)->name->toBe('Test Product');
@@ -140,7 +140,7 @@ test('admin can view edit product page', function () {
     ProductVariant::factory()->create(['product_id' => $product->id]);
 
     $this->actingAs($admin)
-        ->get(route('admin::products.edit', $product))
+        ->get(route('admin.products.edit', $product))
         ->assertSuccessful()
         ->assertSee('Edit Product');
 });
@@ -160,7 +160,7 @@ test('admin can update a product', function () {
         ->set('variants.0.price', 39.99)
         ->set('variants.0.stock_quantity', 20)
         ->call('save')
-        ->assertRedirect(route('admin::products.index'));
+        ->assertRedirect(route('admin.products.index'));
 
     expect($product->fresh())->name->toBe('Updated Name');
 });
@@ -173,7 +173,7 @@ test('admin can delete a product from edit page', function () {
     Livewire::actingAs($admin)
         ->test('admin::products.edit', ['product' => $product])
         ->call('delete')
-        ->assertRedirect(route('admin::products.index'));
+        ->assertRedirect(route('admin.products.index'));
 
     expect(Product::find($product->id))->toBeNull();
 });
@@ -244,7 +244,7 @@ test('admin can add additional variant to product', function () {
         ->set('variants.1.price', 15.99)
         ->set('variants.1.stock_quantity', 5)
         ->call('save')
-        ->assertRedirect(route('admin::products.index'));
+        ->assertRedirect(route('admin.products.index'));
 
     expect($product->fresh()->variants)->toHaveCount(2);
 });
@@ -262,7 +262,7 @@ test('admin can remove a variant from product when more than one exists', functi
         ->test('admin::products.edit', ['product' => $product])
         ->call('removeVariant', 0)
         ->call('save')
-        ->assertRedirect(route('admin::products.index'));
+        ->assertRedirect(route('admin.products.index'));
 
     expect($product->fresh()->variants)->toHaveCount(1);
 });

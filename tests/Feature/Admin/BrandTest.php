@@ -9,7 +9,7 @@ test('admin can view brands index', function () {
     Brand::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::brands.index'))
+        ->get(route('admin.brands.index'))
         ->assertSuccessful()
         ->assertSee('Brands');
 });
@@ -18,7 +18,7 @@ test('admin can view create brand page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::brands.create'))
+        ->get(route('admin.brands.create'))
         ->assertSuccessful()
         ->assertSee('Create Brand');
 });
@@ -30,7 +30,7 @@ test('admin can create a brand', function () {
         ->test('admin::brands.create')
         ->set('name', 'New Brand')
         ->call('save')
-        ->assertRedirect(route('admin::brands.edit', Brand::first()));
+        ->assertRedirect(route('admin.brands.edit', Brand::first()));
 
     expect(Brand::first())->name->toBe('New Brand');
 });
@@ -64,7 +64,7 @@ test('admin can view edit brand page', function () {
     $brand = Brand::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::brands.edit', $brand))
+        ->get(route('admin.brands.edit', $brand))
         ->assertSuccessful()
         ->assertSee('Edit Brand');
 });
@@ -88,7 +88,7 @@ test('admin can delete a brand from edit page', function () {
     Livewire::actingAs($admin)
         ->test('admin::brands.edit', ['brand' => $brand])
         ->call('delete')
-        ->assertRedirect(route('admin::brands.index'));
+        ->assertRedirect(route('admin.brands.index'));
 
     expect(Brand::find($brand->id))->toBeNull();
 });

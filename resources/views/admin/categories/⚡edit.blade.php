@@ -8,7 +8,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 new #[Layout('layouts::admin')]
-#[Title('Edit Category')] class extends Component {
+#[Title('Edit Category')]
+class extends Component {
     public Category $category;
 
     public string $name = '';
@@ -114,4 +115,3 @@ new #[Layout('layouts::admin')]
             </div>
         </form>
     </flux:main>
-</flux:main>

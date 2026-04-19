@@ -267,7 +267,7 @@ new #[Title('')] class extends Component {
             });
     }
 }; ?>
-<x-layouts::app :title="$this->title">
+<div>title">
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -422,7 +422,7 @@ new #[Title('')] class extends Component {
                                         <button
                                             type="button"
                                             wire:click="selectAttribute('{{ $attributeName }}', '{{ $value }}')"
-                                            @disabled="{{ ! $isAvailable }}"
+                                            @if(! $isAvailable) disabled @endif
                                             @class([
                                                 'rounded-md border px-4 py-2 text-sm font-medium transition-colors',
                                                 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $isSelected,
@@ -472,7 +472,6 @@ new #[Title('')] class extends Component {
                     <div class="flex items-center gap-3">
                         <flux:button
                             variant="primary"
-                            size="lg"
                             wire:click="addToCart"
                             class="flex-1"
                             icon="shopping-cart"
@@ -482,7 +481,6 @@ new #[Title('')] class extends Component {
 
                         <flux:button
                             variant="outline"
-                            size="lg"
                             wire:click="buyNow"
                             class="flex-1"
                         >
@@ -670,4 +668,4 @@ new #[Title('')] class extends Component {
             </section>
         @endif
     </div>
-</x-layouts::app>
+</div>

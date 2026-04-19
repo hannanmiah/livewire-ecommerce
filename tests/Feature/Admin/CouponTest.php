@@ -9,7 +9,7 @@ test('admin can view coupons index', function () {
     Coupon::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::coupons.index'))
+        ->get(route('admin.coupons.index'))
         ->assertSuccessful()
         ->assertSee('Coupons');
 });
@@ -18,7 +18,7 @@ test('admin can view create coupon page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::coupons.create'))
+        ->get(route('admin.coupons.create'))
         ->assertSuccessful()
         ->assertSee('Create Coupon');
 });
@@ -32,7 +32,7 @@ test('admin can create a fixed coupon', function () {
         ->set('type', 'fixed')
         ->set('value', 10)
         ->call('save')
-        ->assertRedirect(route('admin::coupons.edit', Coupon::first()));
+        ->assertRedirect(route('admin.coupons.edit', Coupon::first()));
 
     $coupon = Coupon::first();
     expect($coupon)->code->toBe('SAVE10');
@@ -142,7 +142,7 @@ test('admin can view edit coupon page', function () {
     $coupon = Coupon::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::coupons.edit', $coupon))
+        ->get(route('admin.coupons.edit', $coupon))
         ->assertSuccessful()
         ->assertSee('Edit Coupon');
 });
@@ -168,7 +168,7 @@ test('admin can delete a coupon from edit page', function () {
     Livewire::actingAs($admin)
         ->test('admin::coupons.edit', ['coupon' => $coupon])
         ->call('delete')
-        ->assertRedirect(route('admin::coupons.index'));
+        ->assertRedirect(route('admin.coupons.index'));
 
     expect(Coupon::find($coupon->id))->toBeNull();
 });

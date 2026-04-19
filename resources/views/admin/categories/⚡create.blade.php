@@ -8,7 +8,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 new #[Layout('layouts::admin')]
-#[Title('Create Category')] class extends Component {
+#[Title('Create Category')]
+class extends Component {
     public string $name = '';
 
     public ?int $parent_id = null;
@@ -72,4 +73,3 @@ new #[Layout('layouts::admin')]
             </div>
         </form>
     </flux:main>
-</flux:main>

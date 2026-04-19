@@ -13,7 +13,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 
 new #[Layout('layouts::admin')]
-#[Title('Create Product')] class extends Component {
+#[Title('Create Product')]
+class extends Component {
     use WithFileUploads;
 
     public string $name = '';
@@ -342,4 +343,3 @@ new #[Layout('layouts::admin')]
             </div>
         </form>
     </flux:main>
-</flux:main>

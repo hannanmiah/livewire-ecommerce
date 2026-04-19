@@ -462,8 +462,10 @@ Schema::create('banners', function (Blueprint $table) {
 **Coding Standards / Guidelines:**
 - Follow laravel 13 best practices for controllers, models, migrations, factories, seeders, and tests.
 - Try to follow using laravel attributes whenever possible, for example in models, form requests, and policies.
-- Use Livewire 4 single file components for all frontend interactivity, including product listing, filtering, cart management,
-- For pages use livewire full page components, for smaller interactive elements use livewire sfc with flux ui components.
+- Use Livewire 4 single file components (in `resources/views/components`) for all livewire reusable and interactive components,
+- For pages use livewire full page sfc components (in `resources/views/pages` and `resources/views/admin`), for using as a dedicated page with full control.
+- For component creation use `php artisan make:livewire post.create` and for page use `php artisan make:livewire pages::posts.index` command to generate full page component in `resources/views/pages` directory and for other like `resources/views/admin` use `php artisan make:livewire admin::products.index` command to generate full page component in `views/admin` directory.
+- check config/livewire.php for detail understanding of livewire component auto-discovery and naming convention.
 - For complex or reusable logic, create service classes in the `app/Services` directory.
 - Create authorization policies where appropriate, and use them in controllers and Livewire components.
 - For transactional operations (like placing an order), use database transactions to ensure data integrity.

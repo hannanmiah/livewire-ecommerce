@@ -8,7 +8,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 new #[Layout('layouts::admin')]
-#[Title('Categories')] class extends Component {
+#[Title('Categories')]
+class extends Component {
     public string $search = '';
 
     public ?string $filter_featured = null;
@@ -111,4 +112,3 @@ new #[Layout('layouts::admin')]
             </flux:table.rows>
         </flux:table>
     </flux:main>
-</flux:main>

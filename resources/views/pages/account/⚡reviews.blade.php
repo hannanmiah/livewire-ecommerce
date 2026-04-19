@@ -57,7 +57,7 @@ new #[Title('My Reviews')] class extends Component {
         Flux::toast(variant: 'success', text: __('Review deleted.'));
     }
 }; ?>
-<x-layouts::app :title="__('My Reviews')">
+<div>
     <div class="container mx-auto px-4 py-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -182,4 +182,4 @@ new #[Title('My Reviews')] class extends Component {
             </div>
         @endif
     </div>
-</x-layouts::app>
+</div>

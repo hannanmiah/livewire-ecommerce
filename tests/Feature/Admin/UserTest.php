@@ -8,7 +8,7 @@ test('admin can view users index', function () {
     User::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::users.index'))
+        ->get(route('admin.users.index'))
         ->assertSuccessful()
         ->assertSee('Users');
 });
@@ -18,7 +18,7 @@ test('admin can view user detail page', function () {
     $user = User::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::users.show', $user))
+        ->get(route('admin.users.show', $user))
         ->assertSuccessful()
         ->assertSee('User Details');
 });
@@ -114,7 +114,7 @@ test('user detail page shows user information', function () {
     $user = User::factory()->create(['name' => 'Test User', 'email' => 'test@example.com']);
 
     $this->actingAs($admin)
-        ->get(route('admin::users.show', $user))
+        ->get(route('admin.users.show', $user))
         ->assertSuccessful()
         ->assertSee('Test User')
         ->assertSee('test@example.com');

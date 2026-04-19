@@ -8,7 +8,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 
 new #[Layout('layouts::admin')]
-#[Title('Create Banner')] class extends Component {
+#[Title('Create Banner')]
+class extends Component {
     use WithFileUploads;
 
     public string $title = '';
@@ -125,4 +126,3 @@ new #[Layout('layouts::admin')]
             </div>
         </form>
     </flux:main>
-</flux:main>

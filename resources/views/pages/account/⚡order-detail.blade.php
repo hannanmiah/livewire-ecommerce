@@ -14,7 +14,7 @@ new #[Title('Order Details')] class extends Component {
         $this->order = $order->load('items.variant.product', 'payment', 'coupon');
     }
 }; ?>
-<x-layouts::app :title="__('Order :number', ['number' => $order->order_number])">
+<div> $order->order_number])">
     <div class="container mx-auto px-4 py-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -218,4 +218,4 @@ new #[Title('Order Details')] class extends Component {
             </div>
         </div>
     </div>
-</x-layouts::app>
+</div>

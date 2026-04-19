@@ -81,7 +81,7 @@ new #[Title('Shopping Cart')] class extends Component {
         unset($this->cart);
     }
 }; ?>
-<x-layouts::app :title="__('Shopping Cart')">
+<div>
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -293,4 +293,4 @@ new #[Title('Shopping Cart')] class extends Component {
             </flux:card>
         @endif
     </div>
-</x-layouts::app>
+</div>

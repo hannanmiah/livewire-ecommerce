@@ -32,7 +32,7 @@ test('user can view order history', function () {
     $order = Order::factory()->create(['user_id' => $user->id, 'order_number' => 'ORD-TEST123']);
 
     Livewire::actingAs($user)
-        ->test('pages.account.orders')
+        ->test('pages::account.orders')
         ->assertOk()
         ->assertSee('ORD-TEST123');
 });
@@ -43,7 +43,7 @@ test('user can filter orders by status', function () {
     $paid = Order::factory()->create(['user_id' => $user->id, 'status' => 'paid', 'order_number' => 'ORD-PAID01']);
 
     Livewire::actingAs($user)
-        ->test('pages.account.orders')
+        ->test('pages::account.orders')
         ->set('filter_status', 'pending')
         ->assertSee('ORD-PEND01')
         ->assertDontSee('ORD-PAID01');
@@ -56,7 +56,7 @@ test('user only sees their own orders', function () {
     Order::factory()->create(['user_id' => $user2->id, 'order_number' => 'ORD-USER2']);
 
     Livewire::actingAs($user1)
-        ->test('pages.account.orders')
+        ->test('pages::account.orders')
         ->assertSee('ORD-USER1')
         ->assertDontSee('ORD-USER2');
 });
@@ -84,7 +84,7 @@ test('user can manage addresses page', function () {
     $user = User::factory()->create();
 
     Livewire::actingAs($user)
-        ->test('pages.account.addresses')
+        ->test('pages::account.addresses')
         ->assertOk()
         ->assertSee('My Addresses');
 });
@@ -93,7 +93,7 @@ test('user can add a new address', function () {
     $user = User::factory()->create();
 
     Livewire::actingAs($user)
-        ->test('pages.account.addresses')
+        ->test('pages::account.addresses')
         ->call('addAddress')
         ->set('address_line', '123 Test Street')
         ->set('city', 'Test City')
@@ -121,7 +121,7 @@ test('user can edit an existing address', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test('pages.account.addresses')
+        ->test('pages::account.addresses')
         ->call('editAddress', $address->id)
         ->set('address_line', 'New Address')
         ->set('city', 'New City')
@@ -142,7 +142,7 @@ test('user can delete an address', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test('pages.account.addresses')
+        ->test('pages::account.addresses')
         ->call('deleteAddress', $address->id);
 
     expect($user->addresses()->count())->toBe(0);
@@ -166,7 +166,7 @@ test('user can set default address', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test('pages.account.addresses')
+        ->test('pages::account.addresses')
         ->call('setDefault', $addr2->id);
 
     expect($addr1->fresh()->is_default)->toBeFalse();
@@ -177,7 +177,7 @@ test('user can view reviews page', function () {
     $user = User::factory()->create();
 
     Livewire::actingAs($user)
-        ->test('pages.account.reviews')
+        ->test('pages::account.reviews')
         ->assertOk()
         ->assertSee('My Reviews');
 });
@@ -193,7 +193,7 @@ test('user sees their reviews on reviews page', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test('pages.account.reviews')
+        ->test('pages::account.reviews')
         ->assertSee('Reviewed Product')
         ->assertSee('My review text');
 });
@@ -209,7 +209,7 @@ test('user can edit their review', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test('pages.account.reviews')
+        ->test('pages::account.reviews')
         ->call('editReview', $review->id)
         ->set('edit_rating', 5)
         ->set('edit_comment', 'Updated comment')
@@ -228,7 +228,7 @@ test('user can delete their review', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test('pages.account.reviews')
+        ->test('pages::account.reviews')
         ->call('deleteReview', $review->id);
 
     expect(Review::find($review->id))->toBeNull();
@@ -242,7 +242,7 @@ test('user only sees their own reviews', function () {
     Review::factory()->create(['product_id' => $product->id, 'user_id' => $user2->id, 'comment' => 'User2 review']);
 
     Livewire::actingAs($user1)
-        ->test('pages.account.reviews')
+        ->test('pages::account.reviews')
         ->assertSee('User1 review')
         ->assertDontSee('User2 review');
 });

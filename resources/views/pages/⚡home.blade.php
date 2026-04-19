@@ -35,7 +35,7 @@ new class extends Component {
     #[Computed]
     public function featuredProducts()
     {
-        return Product::with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+        return Product::with(['brand', 'media', 'variants' => fn($q) => $q->orderBy('price')])
             ->available()
             ->featured()
             ->latest()
@@ -46,7 +46,7 @@ new class extends Component {
     #[Computed]
     public function newArrivals()
     {
-        return Product::with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+        return Product::with(['brand', 'media', 'variants' => fn($q) => $q->orderBy('price')])
             ->available()
             ->latest()
             ->take(8)
@@ -75,7 +75,6 @@ new class extends Component {
             ->keyBy('position');
     }
 }; ?>
-<x-layouts::app>
 <div>
     {{-- Section 1: Hero Banner Slider --}}
     @if($this->heroBanners->isNotEmpty())
@@ -84,7 +83,8 @@ new class extends Component {
                 @php $banner = $this->heroBanners->first(); @endphp
                 <div class="relative h-64 overflow-hidden bg-zinc-900 sm:h-80 lg:h-[500px]">
                     @if($bannerImage = $banner->getFirstMediaUrl('image'))
-                        <img src="{{ $bannerImage }}" alt="{{ $banner->title }}" class="h-full w-full object-cover" />
+                        <img src="{{ $bannerImage }}" alt="{{ $banner->title }}"
+                             class="h-full w-full object-cover"/>
                     @endif
                     <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
                     <div class="absolute inset-0 flex items-center">
@@ -140,7 +140,8 @@ new class extends Component {
                              x-transition:leave-end="opacity-0"
                              class="absolute inset-0">
                             @if($bannerImage = $banner->getFirstMediaUrl('image'))
-                                <img src="{{ $bannerImage }}" alt="{{ $banner->title }}" class="h-full w-full object-cover" />
+                                <img src="{{ $bannerImage }}" alt="{{ $banner->title }}"
+                                     class="h-full w-full object-cover"/>
                             @endif
                             <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
                             <div class="absolute inset-0 flex items-center">
@@ -155,7 +156,8 @@ new class extends Component {
                                             </p>
                                         @endif
                                         @if($banner->link)
-                                            <flux:button variant="primary" size="base" :href="$banner->link" class="mt-6">
+                                            <flux:button variant="primary" size="base" :href="$banner->link"
+                                                         class="mt-6">
                                                 {{ __('Shop Now') }}
                                             </flux:button>
                                         @endif
@@ -169,15 +171,17 @@ new class extends Component {
                     <button @click="prev()"
                             class="absolute left-4 top-1/2 -translate-y-1/2 flex size-10 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50 lg:left-8 lg:size-12"
                             aria-label="{{ __('Previous slide') }}">
-                        <svg class="size-5 lg:size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        <svg class="size-5 lg:size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                         </svg>
                     </button>
                     <button @click="next()"
                             class="absolute right-4 top-1/2 -translate-y-1/2 flex size-10 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50 lg:right-8 lg:size-12"
                             aria-label="{{ __('Next slide') }}">
-                        <svg class="size-5 lg:size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        <svg class="size-5 lg:size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                             stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
                         </svg>
                     </button>
 
@@ -215,8 +219,10 @@ new class extends Component {
                            class="group relative flex flex-col items-center justify-center overflow-hidden rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-100 to-zinc-50 p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 dark:border-zinc-700 dark:from-zinc-800 dark:to-zinc-750"
                            style="--tw-gradient-to: oklch(0.97 0 0 / 1);">
                             <div class="flex size-14 items-center justify-center rounded-full bg-white shadow-sm dark:bg-zinc-700 transition-transform duration-300 group-hover:scale-110">
-                                <svg class="size-7 text-zinc-600 dark:text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                                <svg class="size-7 text-zinc-600 dark:text-zinc-300" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
                                 </svg>
                             </div>
                             <h3 class="mt-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -245,14 +251,15 @@ new class extends Component {
                             {{ __('Handpicked items just for you') }}
                         </p>
                     </div>
-                    <flux:button variant="ghost" :href="route('products.index')" wire:navigate icon:trailing="arrow-right">
+                    <flux:button variant="ghost" :href="route('products.index')" wire:navigate
+                                 icon:trailing="arrow-right">
                         {{ __('View All') }}
                     </flux:button>
                 </div>
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
                     @foreach($this->featuredProducts as $product)
-                        <x-product-card :product="$product" />
+                        <x-product-card :product="$product"/>
                     @endforeach
                 </div>
             </div>
@@ -263,7 +270,7 @@ new class extends Component {
     @if($this->sectionalBanners->has('home_top'))
         <section class="py-12 lg:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <x-sectional-banner :banner="$this->sectionalBanners->get('home_top')" />
+                <x-sectional-banner :banner="$this->sectionalBanners->get('home_top')"/>
             </div>
         </section>
     @endif
@@ -281,14 +288,15 @@ new class extends Component {
                             {{ __('Check out our latest products') }}
                         </p>
                     </div>
-                    <flux:button variant="ghost" :href="route('products.index')" wire:navigate icon:trailing="arrow-right">
+                    <flux:button variant="ghost" :href="route('products.index')" wire:navigate
+                                 icon:trailing="arrow-right">
                         {{ __('View All') }}
                     </flux:button>
                 </div>
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
                     @foreach($this->newArrivals as $product)
-                        <x-product-card :product="$product" />
+                        <x-product-card :product="$product"/>
                     @endforeach
                 </div>
             </div>
@@ -299,7 +307,7 @@ new class extends Component {
     @if($this->sectionalBanners->has('home_middle'))
         <section class="py-12 lg:py-16 bg-zinc-50 dark:bg-zinc-900/50">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <x-sectional-banner :banner="$this->sectionalBanners->get('home_middle')" />
+                <x-sectional-banner :banner="$this->sectionalBanners->get('home_middle')"/>
             </div>
         </section>
     @endif
@@ -341,9 +349,9 @@ new class extends Component {
     @if($this->sectionalBanners->has('home_bottom'))
         <section class="py-12 lg:py-16 bg-zinc-50 dark:bg-zinc-900/50">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <x-sectional-banner :banner="$this->sectionalBanners->get('home_bottom')" />
+                <x-sectional-banner :banner="$this->sectionalBanners->get('home_bottom')"/>
             </div>
         </section>
     @endif
 </div>
-</x-layouts::app>
+

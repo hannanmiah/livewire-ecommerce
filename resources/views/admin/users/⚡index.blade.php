@@ -8,7 +8,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 new #[Layout('layouts::admin')]
-#[Title('Users')] class extends Component {
+#[Title('Users')]
+class extends Component {
     use WithPagination;
 
     public string $search = '';
@@ -90,4 +91,3 @@ new #[Layout('layouts::admin')]
             </flux:table.rows>
         </flux:table>
     </flux:main>
-</flux:main>

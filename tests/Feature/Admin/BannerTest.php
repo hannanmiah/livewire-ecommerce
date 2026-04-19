@@ -10,7 +10,7 @@ test('admin can view banners index', function () {
     Banner::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::banners.index'))
+        ->get(route('admin.banners.index'))
         ->assertSuccessful()
         ->assertSee('Banners');
 });
@@ -19,7 +19,7 @@ test('admin can view create banner page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::banners.create'))
+        ->get(route('admin.banners.create'))
         ->assertSuccessful()
         ->assertSee('Create Banner');
 });
@@ -98,7 +98,7 @@ test('admin can view edit banner page', function () {
     $banner = Banner::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin::banners.edit', $banner))
+        ->get(route('admin.banners.edit', $banner))
         ->assertSuccessful()
         ->assertSee('Edit Banner');
 });
@@ -122,7 +122,7 @@ test('admin can delete a banner from edit page', function () {
     Livewire::actingAs($admin)
         ->test('admin::banners.edit', ['banner' => $banner])
         ->call('delete')
-        ->assertRedirect(route('admin::banners.index'));
+        ->assertRedirect(route('admin.banners.index'));
 
     expect(Banner::find($banner->id))->toBeNull();
 });

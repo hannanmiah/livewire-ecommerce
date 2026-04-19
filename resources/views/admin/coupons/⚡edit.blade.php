@@ -7,7 +7,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 new #[Layout('layouts::admin')]
-#[Title('Edit Coupon')] class extends Component {
+#[Title('Edit Coupon')]
+class extends Component {
     public Coupon $coupon;
 
     public string $code = '';
@@ -144,4 +145,3 @@ new #[Layout('layouts::admin')]
             </div>
         </form>
     </flux:main>
-</flux:main>

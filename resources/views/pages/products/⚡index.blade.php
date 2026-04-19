@@ -13,7 +13,8 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Title('Products')] class extends Component {
+new #[Title('Products')]
+class extends Component {
     use WithPagination;
 
     // Route parameters
@@ -109,7 +110,7 @@ new #[Title('Products')] class extends Component {
     public function products()
     {
         $query = Product::query()
-            ->with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+            ->with(['brand', 'media', 'variants' => fn($q) => $q->orderBy('price')])
             ->available()
             ->when($this->category || $this->selected_categories, function ($q) {
                 $categoryIds = $this->selected_categories;
@@ -119,7 +120,7 @@ new #[Title('Products')] class extends Component {
                 }
                 $q->where(function ($q) use ($categoryIds) {
                     $q->whereIn('category_id', $categoryIds)
-                        ->orWhereHas('categories', fn ($q) => $q->whereIn('categories.id', $categoryIds));
+                        ->orWhereHas('categories', fn($q) => $q->whereIn('categories.id', $categoryIds));
                 });
             })
             ->when($this->brand || $this->selected_brands, function ($q) {
@@ -129,7 +130,7 @@ new #[Title('Products')] class extends Component {
                 }
                 $q->whereIn('brand_id', $brandIds);
             })
-            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->when($this->selected_attributes, function ($q) {
                 foreach ($this->selected_attributes as $attributeName => $values) {
                     if (!empty($values)) {
@@ -146,8 +147,8 @@ new #[Title('Products')] class extends Component {
                 $q->whereHas('variants', function ($q) {
                     $when_min = $this->price_min;
                     $when_max = $this->price_max;
-                    $q->when($when_min, fn ($q) => $q->where('price', '>=', $when_min));
-                    $q->when($when_max, fn ($q) => $q->where('price', '<=', $when_max));
+                    $q->when($when_min, fn($q) => $q->where('price', '>=', $when_min));
+                    $q->when($when_max, fn($q) => $q->where('price', '<=', $when_max));
                 });
             });
 
@@ -188,19 +189,22 @@ new #[Title('Products')] class extends Component {
             || $this->price_max;
     }
 }; ?>
-<x-layouts::app :title="isset($title) ? $title : 'Products'">
+<div>
     <div class="container mx-auto px-4 py-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
-            <a href="{{ route('home') }}" wire:navigate class="hover:text-zinc-700 dark:hover:text-zinc-200">{{ __('Home') }}</a>
-            <flux:icon icon="chevron-right" class="inline size-3 mx-1" />
+            <a href="{{ route('home') }}" wire:navigate
+               class="hover:text-zinc-700 dark:hover:text-zinc-200">{{ __('Home') }}</a>
+            <flux:icon icon="chevron-right" class="inline size-3 mx-1"/>
             @if($category)
-                <a href="{{ route('products.index') }}" wire:navigate class="hover:text-zinc-700 dark:hover:text-zinc-200">{{ __('Products') }}</a>
-                <flux:icon icon="chevron-right" class="inline size-3 mx-1" />
+                <a href="{{ route('products.index') }}" wire:navigate
+                   class="hover:text-zinc-700 dark:hover:text-zinc-200">{{ __('Products') }}</a>
+                <flux:icon icon="chevron-right" class="inline size-3 mx-1"/>
                 <span class="text-zinc-900 dark:text-zinc-100">{{ $category->name }}</span>
             @elseif($brand)
-                <a href="{{ route('products.index') }}" wire:navigate class="hover:text-zinc-700 dark:hover:text-zinc-200">{{ __('Products') }}</a>
-                <flux:icon icon="chevron-right" class="inline size-3 mx-1" />
+                <a href="{{ route('products.index') }}" wire:navigate
+                   class="hover:text-zinc-700 dark:hover:text-zinc-200">{{ __('Products') }}</a>
+                <flux:icon icon="chevron-right" class="inline size-3 mx-1"/>
                 <span class="text-zinc-900 dark:text-zinc-100">{{ $brand->name }}</span>
             @else
                 <span class="text-zinc-900 dark:text-zinc-100">{{ __('Products') }}</span>
@@ -222,11 +226,11 @@ new #[Title('Products')] class extends Component {
             <div class="flex items-center gap-3">
                 {{-- Search --}}
                 <flux:input
-                    wire:model.live.debounce.300ms="search"
-                    placeholder="{{ __('Search products...') }}"
-                    icon="magnifying-glass"
-                    size="sm"
-                    class="w-full sm:w-64"
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="{{ __('Search products...') }}"
+                        icon="magnifying-glass"
+                        size="sm"
+                        class="w-full sm:w-64"
                 />
 
                 {{-- Sort --}}
@@ -238,11 +242,11 @@ new #[Title('Products')] class extends Component {
 
                 {{-- Mobile filter toggle --}}
                 <flux:button
-                    icon="funnel"
-                    variant="outline"
-                    size="sm"
-                    class="lg:hidden shrink-0"
-                    wire:click="toggleMobileFilters"
+                        icon="funnel"
+                        variant="outline"
+                        size="sm"
+                        class="lg:hidden shrink-0"
+                        wire:click="toggleMobileFilters"
                 />
             </div>
         </div>
@@ -255,7 +259,9 @@ new #[Title('Products')] class extends Component {
                 @if($search)
                     <flux:badge color="zinc" size="sm" inset="top bottom">
                         {{ __('Search: :q', ['q' => $search]) }}
-                        <button wire:click="$set('search', '')" class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;</button>
+                        <button wire:click="$set('search', '')"
+                                class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;
+                        </button>
                     </flux:badge>
                 @endif
 
@@ -266,7 +272,9 @@ new #[Title('Products')] class extends Component {
                     @if($brandItem)
                         <flux:badge color="zinc" size="sm" inset="top bottom">
                             {{ $brandItem->name }}
-                            <button wire:click="removeBrand('{{ $brandId }}')" class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;</button>
+                            <button wire:click="removeBrand('{{ $brandId }}')"
+                                    class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;
+                            </button>
                         </flux:badge>
                     @endif
                 @endforeach
@@ -278,7 +286,9 @@ new #[Title('Products')] class extends Component {
                     @if($catItem)
                         <flux:badge color="zinc" size="sm" inset="top bottom">
                             {{ $catItem->name }}
-                            <button wire:click="removeCategory('{{ $catId }}')" class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;</button>
+                            <button wire:click="removeCategory('{{ $catId }}')"
+                                    class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;
+                            </button>
                         </flux:badge>
                     @endif
                 @endforeach
@@ -287,7 +297,9 @@ new #[Title('Products')] class extends Component {
                     @foreach($values as $val)
                         <flux:badge color="zinc" size="sm" inset="top bottom">
                             {{ $attrName }}: {{ $val }}
-                            <button wire:click="removeAttribute('{{ $attrName }}', '{{ $val }}')" class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;</button>
+                            <button wire:click="removeAttribute('{{ $attrName }}', '{{ $val }}')"
+                                    class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;
+                            </button>
                         </flux:badge>
                     @endforeach
                 @endforeach
@@ -295,7 +307,9 @@ new #[Title('Products')] class extends Component {
                 @if($price_min || $price_max)
                     <flux:badge color="zinc" size="sm" inset="top bottom">
                         {{ __('Price: :min - :max', ['min' => $price_min ?: '*', 'max' => $price_max ?: '*']) }}
-                        <button wire:click="$set('price_min', null); $set('price_max', null)" class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;</button>
+                        <button wire:click="$set('price_min', null); $set('price_max', null)"
+                                class="ml-1 hover:text-zinc-700 dark:hover:text-zinc-200">&times;
+                        </button>
                     </flux:badge>
                 @endif
 
@@ -309,20 +323,21 @@ new #[Title('Products')] class extends Component {
             {{-- Sidebar Filters (Desktop) --}}
             <aside class="hidden lg:block w-64 shrink-0">
                 <div class="sticky top-8 space-y-6">
-                    @include('livewire.pages.products._filters')
+                    @include('pages.products._filters')
                 </div>
             </aside>
 
             {{-- Mobile Filters (Slide-down) --}}
             @if($showMobileFilters)
                 <div class="lg:hidden fixed inset-0 z-50 bg-black/50" wire:click="toggleMobileFilters">
-                    <div class="absolute right-0 top-0 h-full w-80 max-w-full bg-white dark:bg-zinc-800 shadow-xl overflow-y-auto" wire:click.stop>
+                    <div class="absolute right-0 top-0 h-full w-80 max-w-full bg-white dark:bg-zinc-800 shadow-xl overflow-y-auto"
+                         wire:click.stop>
                         <div class="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-700">
                             <flux:heading>{{ __('Filters') }}</flux:heading>
-                            <flux:button icon="x-mark" variant="ghost" size="sm" wire:click="toggleMobileFilters" />
+                            <flux:button icon="x-mark" variant="ghost" size="sm" wire:click="toggleMobileFilters"/>
                         </div>
                         <div class="p-4 space-y-6">
-                            @include('livewire.pages.products._filters')
+                            @include('pages.products._filters')
                         </div>
                         <div class="p-4 border-t border-zinc-200 dark:border-zinc-700">
                             <flux:button variant="primary" class="w-full" wire:click="toggleMobileFilters">
@@ -339,22 +354,22 @@ new #[Title('Products')] class extends Component {
                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                         @foreach($this->products as $product)
                             <a
-                                href="{{ route('products.show', $product->slug) }}"
-                                wire:navigate
-                                wire:key="product-{{ $product->id }}"
-                                class="group block rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 overflow-hidden hover:shadow-lg transition-shadow"
+                                    href="{{ route('products.show', $product->slug) }}"
+                                    wire:navigate
+                                    wire:key="product-{{ $product->id }}"
+                                    class="group block rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 overflow-hidden hover:shadow-lg transition-shadow"
                             >
                                 {{-- Thumbnail --}}
                                 <div class="aspect-square bg-zinc-100 dark:bg-zinc-700 overflow-hidden">
                                     @if($product->getFirstMediaUrl('thumbnail'))
                                         <img
-                                            src="{{ $product->getFirstMediaUrl('thumbnail') }}"
-                                            alt="{{ $product->name }}"
-                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                src="{{ $product->getFirstMediaUrl('thumbnail') }}"
+                                                alt="{{ $product->name }}"
+                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
                                     @else
                                         <div class="flex items-center justify-center w-full h-full text-zinc-400">
-                                            <flux:icon icon="photo" class="size-12" />
+                                            <flux:icon icon="photo" class="size-12"/>
                                         </div>
                                     @endif
                                 </div>
@@ -393,7 +408,8 @@ new #[Title('Products')] class extends Component {
                                     </div>
 
                                     @if($product->is_featured)
-                                        <flux:badge color="amber" size="sm" class="mt-2">{{ __('Featured') }}</flux:badge>
+                                        <flux:badge color="amber" size="sm"
+                                                    class="mt-2">{{ __('Featured') }}</flux:badge>
                                     @endif
                                 </div>
                             </a>
@@ -406,7 +422,7 @@ new #[Title('Products')] class extends Component {
                     </div>
                 @else
                     <div class="flex flex-col items-center justify-center py-20 text-center">
-                        <flux:icon icon="magnifying-glass" class="size-16 text-zinc-300 dark:text-zinc-600 mb-4" />
+                        <flux:icon icon="magnifying-glass" class="size-16 text-zinc-300 dark:text-zinc-600 mb-4"/>
                         <flux:heading level="lg" class="mb-2">{{ __('No products found') }}</flux:heading>
                         <flux:text class="mb-6">{{ __('Try adjusting your filters or search terms.') }}</flux:text>
                         @if($this->hasActiveFilters())
@@ -419,4 +435,4 @@ new #[Title('Products')] class extends Component {
             </div>
         </div>
     </div>
-</x-layouts::app>
+</div>

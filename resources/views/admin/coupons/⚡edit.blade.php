@@ -2,6 +2,7 @@
 
 use App\Models\Coupon;
 use Flux\Flux;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -37,9 +38,19 @@ class extends Component {
     public function rules(): array
     {
         return [
-            'code' => 'required|string|max:255|unique:coupons,code,' . $this->coupon->id,
+            'code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique(Coupon::class, 'code')->ignore($this->coupon->id),
+            ],
             'type' => 'required|in:fixed,percent',
-            'value' => 'required|numeric|min:0',
+            'value' => [
+                'required',
+                'numeric',
+                'min:0',
+                Rule::when($this->type === 'percent', ['max:100']),
+            ],
             'min_order_amount' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
             'expires_at' => 'nullable|date',
@@ -48,6 +59,7 @@ class extends Component {
 
     public function save(): void
     {
+        $this->code = strtoupper(trim($this->code));
         $this->validate();
 
         $this->coupon->update([

@@ -113,6 +113,19 @@ test('coupon creation requires a unique code', function () {
         ->assertHasErrors(['code' => 'unique']);
 });
 
+test('coupon creation enforces unique code case-insensitively', function () {
+    $admin = User::factory()->admin()->create();
+    Coupon::factory()->create(['code' => 'SAVE10']);
+
+    Livewire::actingAs($admin)
+        ->test('admin::coupons.create')
+        ->set('code', 'save10')
+        ->set('type', 'fixed')
+        ->set('value', 10)
+        ->call('save')
+        ->assertHasErrors(['code' => 'unique']);
+});
+
 test('coupon creation requires a valid type', function () {
     $admin = User::factory()->admin()->create();
 
@@ -137,6 +150,18 @@ test('coupon creation requires a value', function () {
         ->assertHasErrors(['value' => 'required']);
 });
 
+test('coupon creation prevents percent value above 100', function () {
+    $admin = User::factory()->admin()->create();
+
+    Livewire::actingAs($admin)
+        ->test('admin::coupons.create')
+        ->set('code', 'PERCENT150')
+        ->set('type', 'percent')
+        ->set('value', 150)
+        ->call('save')
+        ->assertHasErrors(['value' => 'max']);
+});
+
 test('admin can view edit coupon page', function () {
     $admin = User::factory()->admin()->create();
     $coupon = Coupon::factory()->create();
@@ -159,6 +184,33 @@ test('admin can update a coupon', function () {
 
     expect($coupon->fresh())->code->toBe('UPDATED');
     expect((float) $coupon->fresh()->value)->toBe(15.0);
+});
+
+test('coupon update enforces unique code case-insensitively', function () {
+    $admin = User::factory()->admin()->create();
+    Coupon::factory()->create(['code' => 'SAVE10']);
+    $coupon = Coupon::factory()->create(['code' => 'OTHER10']);
+
+    Livewire::actingAs($admin)
+        ->test('admin::coupons.edit', ['coupon' => $coupon])
+        ->set('code', 'save10')
+        ->set('type', 'fixed')
+        ->set('value', 10)
+        ->call('save')
+        ->assertHasErrors(['code' => 'unique']);
+});
+
+test('coupon update prevents percent value above 100', function () {
+    $admin = User::factory()->admin()->create();
+    $coupon = Coupon::factory()->create(['type' => 'percent', 'value' => 20]);
+
+    Livewire::actingAs($admin)
+        ->test('admin::coupons.edit', ['coupon' => $coupon])
+        ->set('code', 'PERCENT120')
+        ->set('type', 'percent')
+        ->set('value', 120)
+        ->call('save')
+        ->assertHasErrors(['value' => 'max']);
 });
 
 test('admin can delete a coupon from edit page', function () {
@@ -207,4 +259,17 @@ test('coupons index can filter by type', function () {
         ->set('filter_type', 'percent');
 
     $component->assertSee('Percent');
+});
+
+test('coupons index shows infinity for unlimited usage', function () {
+    $admin = User::factory()->admin()->create();
+    Coupon::factory()->create([
+        'code' => 'UNLIMITED',
+        'used_count' => 5,
+        'usage_limit' => null,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test('admin::coupons.index')
+        ->assertSee('5 / ∞');
 });

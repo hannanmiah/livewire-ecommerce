@@ -88,7 +88,9 @@ class extends Component {
                             @endif
                         </flux:table.cell>
                         <flux:table.cell>{{ $coupon->min_order_amount ?? '—' }}</flux:table.cell>
-                        <flux:table.cell>{{ $coupon->used_count }} / {{ $coupon->usage_limit ?? '&' }}infin;</flux:table.cell>
+                        <flux:table.cell>
+                            {{ $coupon->used_count }} / {{ $coupon->usage_limit ?? '∞' }}
+                        </flux:table.cell>
                         <flux:table.cell>{{ $coupon->expires_at?->format('M d, Y') ?? '—' }}</flux:table.cell>
                         <flux:table.cell>
                             @if ($coupon->isValid())

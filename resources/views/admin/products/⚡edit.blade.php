@@ -265,7 +265,7 @@ class extends Component {
             </flux:modal>
         </div>
 
-        <form wire:submit="save" class="space-y-8 max-w-4xl">
+        <form wire:submit="save" class="w-full space-y-8">
             {{-- Section 1: Basic Info --}}
             <div class="space-y-6">
                 <flux:heading level="md">{{ __('Basic Information') }}</flux:heading>

@@ -75,7 +75,6 @@ new class extends Component {
             ->keyBy('position');
     }
 }; ?>
-
 <x-layouts::app>
 <div>
     {{-- Section 1: Hero Banner Slider --}}

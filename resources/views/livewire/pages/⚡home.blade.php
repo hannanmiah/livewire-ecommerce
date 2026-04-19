@@ -1,9 +1,87 @@
+<?php
+
+use App\Models\Banner;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+
+new #[Title(config('app.name'))] class extends Component {
+    #[Computed]
+    public function heroBanners()
+    {
+        return Banner::where('category', 'home')
+            ->where('position', 'hero')
+            ->whereNotNull('featured_at')
+            ->where('featured_at', '<=', now())
+            ->with('media')
+            ->orderBy('featured_at', 'desc')
+            ->get();
+    }
+
+    #[Computed]
+    public function featuredCategories()
+    {
+        return Category::whereNotNull('featured_at')
+            ->where('featured_at', '<=', now())
+            ->whereNull('parent_id')
+            ->withCount('products')
+            ->orderBy('featured_at', 'desc')
+            ->get();
+    }
+
+    #[Computed]
+    public function featuredProducts()
+    {
+        return Product::with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+            ->available()
+            ->featured()
+            ->latest()
+            ->take(8)
+            ->get();
+    }
+
+    #[Computed]
+    public function newArrivals()
+    {
+        return Product::with(['brand', 'media', 'variants' => fn ($q) => $q->orderBy('price')])
+            ->available()
+            ->latest()
+            ->take(8)
+            ->get();
+    }
+
+    #[Computed]
+    public function featuredBrands()
+    {
+        return Brand::whereNotNull('featured_at')
+            ->where('featured_at', '<=', now())
+            ->withCount('products')
+            ->orderBy('featured_at', 'desc')
+            ->get();
+    }
+
+    #[Computed]
+    public function sectionalBanners()
+    {
+        return Banner::where('category', 'home')
+            ->whereIn('position', ['home_top', 'home_middle', 'home_bottom'])
+            ->whereNotNull('featured_at')
+            ->where('featured_at', '<=', now())
+            ->with('media')
+            ->get()
+            ->keyBy('position');
+    }
+}; ?>
+
 <x-layouts::app>
     {{-- Section 1: Hero Banner Slider --}}
-    @if($heroBanners->isNotEmpty())
+    @if($this->heroBanners->isNotEmpty())
         <section class="relative">
-            @if($heroBanners->count() === 1)
-                @php $banner = $heroBanners->first(); @endphp
+            @if($this->heroBanners->count() === 1)
+                @php $banner = $this->heroBanners->first(); @endphp
                 <div class="relative h-64 overflow-hidden bg-zinc-900 sm:h-80 lg:h-[500px]">
                     @if($bannerImage = $banner->getFirstMediaUrl('image'))
                         <img src="{{ $bannerImage }}" alt="{{ $banner->title }}" class="h-full w-full object-cover" />
@@ -32,7 +110,7 @@
             @else
                 <div x-data="{
                     current: 0,
-                    total: {{ $heroBanners->count() }},
+                    total: {{ $this->heroBanners->count() }},
                     autoplay: null,
                     startAutoplay() {
                         this.autoplay = setInterval(() => { this.next() }, 5000);
@@ -52,7 +130,7 @@
                 }" x-init="startAutoplay()" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()"
                      class="relative h-64 overflow-hidden bg-zinc-900 sm:h-80 lg:h-[500px]">
 
-                    @foreach($heroBanners as $index => $banner)
+                    @foreach($this->heroBanners as $index => $banner)
                         <div x-show="current === {{ $index }}"
                              x-transition:enter="transition ease-out duration-700"
                              x-transition:enter-start="opacity-0"
@@ -105,7 +183,7 @@
 
                     {{-- Navigation Dots --}}
                     <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                        @foreach($heroBanners as $index => $banner)
+                        @foreach($this->heroBanners as $index => $banner)
                             <button @click="goTo({{ $index }})"
                                     :class="current === {{ $index }} ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/75'"
                                     class="size-2.5 rounded-full transition-all duration-300"
@@ -119,7 +197,7 @@
     @endif
 
     {{-- Section 2: Featured Categories --}}
-    @if($featuredCategories->isNotEmpty())
+    @if($this->featuredCategories->isNotEmpty())
         <section class="py-12 lg:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
@@ -132,7 +210,7 @@
                 </div>
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-                    @foreach($featuredCategories as $category)
+                    @foreach($this->featuredCategories as $category)
                         <a href="{{ route('products.by-category', $category->slug) }}" wire:navigate
                            class="group relative flex flex-col items-center justify-center overflow-hidden rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-100 to-zinc-50 p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 dark:border-zinc-700 dark:from-zinc-800 dark:to-zinc-750"
                            style="--tw-gradient-to: oklch(0.97 0 0 / 1);">
@@ -155,7 +233,7 @@
     @endif
 
     {{-- Section 3: Featured Products --}}
-    @if($featuredProducts->isNotEmpty())
+    @if($this->featuredProducts->isNotEmpty())
         <section class="py-12 lg:py-16 bg-zinc-50 dark:bg-zinc-900/50">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between">
@@ -173,7 +251,7 @@
                 </div>
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-                    @foreach($featuredProducts as $product)
+                    @foreach($this->featuredProducts as $product)
                         <x-product-card :product="$product" />
                     @endforeach
                 </div>
@@ -182,16 +260,16 @@
     @endif
 
     {{-- Section 4: Sectional Banner (home_top) --}}
-    @if($sectionalBanners->has('home_top'))
+    @if($this->sectionalBanners->has('home_top'))
         <section class="py-12 lg:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <x-sectional-banner :banner="$sectionalBanners->get('home_top')" />
+                <x-sectional-banner :banner="$this->sectionalBanners->get('home_top')" />
             </div>
         </section>
     @endif
 
     {{-- Section 5: New Arrivals --}}
-    @if($newArrivals->isNotEmpty())
+    @if($this->newArrivals->isNotEmpty())
         <section class="py-12 lg:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between">
@@ -209,7 +287,7 @@
                 </div>
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-                    @foreach($newArrivals as $product)
+                    @foreach($this->newArrivals as $product)
                         <x-product-card :product="$product" />
                     @endforeach
                 </div>
@@ -218,16 +296,16 @@
     @endif
 
     {{-- Section 6: Sectional Banner (home_middle) --}}
-    @if($sectionalBanners->has('home_middle'))
+    @if($this->sectionalBanners->has('home_middle'))
         <section class="py-12 lg:py-16 bg-zinc-50 dark:bg-zinc-900/50">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <x-sectional-banner :banner="$sectionalBanners->get('home_middle')" />
+                <x-sectional-banner :banner="$this->sectionalBanners->get('home_middle')" />
             </div>
         </section>
     @endif
 
     {{-- Section 7: Featured Brands --}}
-    @if($featuredBrands->isNotEmpty())
+    @if($this->featuredBrands->isNotEmpty())
         <section class="py-12 lg:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
@@ -240,7 +318,7 @@
                 </div>
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 lg:gap-6">
-                    @foreach($featuredBrands as $brand)
+                    @foreach($this->featuredBrands as $brand)
                         <a href="{{ route('products.by-brand', $brand->slug) }}" wire:navigate
                            class="group flex flex-col items-center justify-center rounded-xl border border-zinc-200 bg-white p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 dark:border-zinc-700 dark:bg-zinc-800">
                             <div class="flex size-16 items-center justify-center rounded-full bg-zinc-100 text-lg font-bold text-zinc-600 transition-transform duration-300 group-hover:scale-110 dark:bg-zinc-700 dark:text-zinc-300">
@@ -253,17 +331,17 @@
                                 {{ $brand->products_count }} {{ Str::plural(__('product'), $brand->products_count) }}
                             </p>
                         </a>
-                    @endforeach
+                    @endforeach>
                 </div>
             </div>
         </section>
     @endif
 
     {{-- Section 8: Sectional Banner (home_bottom) --}}
-    @if($sectionalBanners->has('home_bottom'))
+    @if($this->sectionalBanners->has('home_bottom'))
         <section class="py-12 lg:py-16 bg-zinc-50 dark:bg-zinc-900/50">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <x-sectional-banner :banner="$sectionalBanners->get('home_bottom')" />
+                <x-sectional-banner :banner="$this->sectionalBanners->get('home_bottom')" />
             </div>
         </section>
     @endif

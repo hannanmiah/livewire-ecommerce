@@ -6,9 +6,9 @@
     <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased flex flex-col">
         <x-storefront-nav />
 
-        <flux:main class="flex-1">
+        <div class="flex-1">
             {{ $slot }}
-        </flux:main>
+        </div>
 
         <x-footer />
 

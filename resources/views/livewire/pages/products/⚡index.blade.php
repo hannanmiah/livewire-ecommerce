@@ -260,7 +260,9 @@ new #[Title('Products')] class extends Component {
                 @endif
 
                 @foreach($selected_brands as $brandId)
-                    @php($brandItem = $this->brands->firstWhere('id', $brandId))
+                    @php
+                        $brandItem = $this->brands->firstWhere('id', $brandId);
+                    @endphp
                     @if($brandItem)
                         <flux:badge color="zinc" size="sm" inset="top bottom">
                             {{ $brandItem->name }}
@@ -270,7 +272,9 @@ new #[Title('Products')] class extends Component {
                 @endforeach
 
                 @foreach($selected_categories as $catId)
-                    @php($catItem = $this->categories->firstWhere('id', $catId))
+                    @php
+                        $catItem = $this->categories->firstWhere('id', $catId);
+                    @endphp
                     @if($catItem)
                         <flux:badge color="zinc" size="sm" inset="top bottom">
                             {{ $catItem->name }}

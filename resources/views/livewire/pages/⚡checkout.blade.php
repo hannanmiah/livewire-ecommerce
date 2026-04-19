@@ -164,7 +164,7 @@ new #[Title('Checkout')] class extends Component {
         }
     }
 }; ?>
-<x-layouts::app :title="$title">
+<x-layouts::app :title="__('Checkout')">
     <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -460,7 +460,7 @@ new #[Title('Checkout')] class extends Component {
                             <flux:button variant="ghost" wire:click="previousStep">
                                 {{ __('Back') }}
                             </flux:button>
-                            <flux:button variant="primary" size="lg" wire:click="placeOrder" wire:loading.attr="disabled">
+                            <flux:button variant="primary" wire:click="placeOrder" wire:loading.attr="disabled">
                                 <flux:icon icon="lock-closed" class="size-4" />
                                 {{ __('Place Order') }}
                             </flux:button>

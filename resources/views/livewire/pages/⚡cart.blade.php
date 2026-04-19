@@ -260,7 +260,6 @@ new #[Title('Shopping Cart')] class extends Component {
                                 :href="route('checkout')"
                                 wire:navigate
                                 class="w-full"
-                                size="lg"
                             >
                                 {{ __('Proceed to Checkout') }}
                             </flux:button>

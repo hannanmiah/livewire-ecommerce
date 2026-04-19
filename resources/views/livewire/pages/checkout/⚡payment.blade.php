@@ -51,7 +51,7 @@ new #[Title('Payment')] class extends Component {
         $this->redirect(route('home'), navigate: true);
     }
 }; ?>
-<x-layouts::app :title="$title">
+<x-layouts::app :title="__('Payment')">
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -181,7 +181,7 @@ new #[Title('Payment')] class extends Component {
                     @endif
 
                     <div class="mt-6 space-y-3">
-                        <flux:button variant="primary" size="lg" class="w-full" wire:click="pay" wire:loading.attr="disabled">
+                        <flux:button variant="primary" class="w-full" wire:click="pay" wire:loading.attr="disabled">
                             <flux:icon icon="lock-closed" class="size-4" />
                             {{ __('Pay $:amount', ['amount' => number_format((float) $order->total, 2)]) }}
                         </flux:button>

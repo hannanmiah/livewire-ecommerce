@@ -422,7 +422,7 @@ new #[Title('')] class extends Component {
                                         <button
                                             type="button"
                                             wire:click="selectAttribute('{{ $attributeName }}', '{{ $value }}')"
-                                            @disabled="{{ ! $isAvailable }}"
+                                            @if(! $isAvailable) disabled @endif
                                             @class([
                                                 'rounded-md border px-4 py-2 text-sm font-medium transition-colors',
                                                 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900' => $isSelected,
@@ -472,7 +472,6 @@ new #[Title('')] class extends Component {
                     <div class="flex items-center gap-3">
                         <flux:button
                             variant="primary"
-                            size="lg"
                             wire:click="addToCart"
                             class="flex-1"
                             icon="shopping-cart"
@@ -482,7 +481,6 @@ new #[Title('')] class extends Component {
 
                         <flux:button
                             variant="outline"
-                            size="lg"
                             wire:click="buyNow"
                             class="flex-1"
                         >

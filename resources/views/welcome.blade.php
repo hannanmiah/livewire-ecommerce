@@ -21,7 +21,7 @@
                                     </p>
                                 @endif
                                 @if($banner->link)
-                                    <flux:button variant="primary" size="lg" :href="$banner->link" class="mt-6">
+                                    <flux:button variant="primary" size="base" :href="$banner->link" class="mt-6">
                                         {{ __('Shop Now') }}
                                     </flux:button>
                                 @endif
@@ -77,7 +77,7 @@
                                             </p>
                                         @endif
                                         @if($banner->link)
-                                            <flux:button variant="primary" size="lg" :href="$banner->link" class="mt-6">
+                                            <flux:button variant="primary" size="base" :href="$banner->link" class="mt-6">
                                                 {{ __('Shop Now') }}
                                             </flux:button>
                                         @endif

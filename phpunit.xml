@@ -18,6 +18,7 @@
         </include>
     </source>
     <php>
+        <env name="APP_KEY" value="base64:V//N7t+Ym3hZHvHsZnS/NVz8rPKFjEPavOQU7/eo9TE="/>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="false"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

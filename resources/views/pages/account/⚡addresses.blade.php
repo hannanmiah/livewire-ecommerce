@@ -110,7 +110,7 @@ class extends Component {
     }
 }; ?>
 <div>
-    <div class="container mx-auto px-4 py-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
             <a href="{{ route('home') }}" wire:navigate class="hover:text-zinc-700 dark:hover:text-zinc-300">{{ __('Home') }}</a>

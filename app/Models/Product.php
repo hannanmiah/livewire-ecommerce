@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 #[Fillable(['category_id', 'brand_id', 'name', 'slug', 'description', 'featured_at', 'available_at'])]
 class Product extends Model implements HasMedia
@@ -56,19 +59,38 @@ class Product extends Model implements HasMedia
     }
 
     /**
+     * Register media conversions
+     */
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(368)
+            ->height(232)
+            ->sharpen(10);
+    }
+
+    /**
+     * Thumbnail attribute
+     */
+    public function thumbnail(): Attribute
+    {
+        return Attribute::get(fn () => $this->getFirstMediaUrl('thumbnail') ?: null)->shouldCache();
+    }
+
+    /**
      * Determine if the product is featured.
      */
-    public function getIsFeaturedAttribute(): bool
+    public function isFeatured(): Attribute
     {
-        return $this->featured_at !== null && $this->featured_at->isPast();
+        return Attribute::get(fn () => $this->featured_at !== null && $this->featured_at->isPast())->shouldCache();
     }
 
     /**
      * Determine if the product is available.
      */
-    public function getIsAvailableAttribute(): bool
+    public function isAvailable(): Attribute
     {
-        return $this->available_at !== null && $this->available_at->isPast();
+        return Attribute::get(fn () => $this->available_at !== null && $this->available_at->isPast())->shouldCache();
     }
 
     /**
@@ -127,7 +149,8 @@ class Product extends Model implements HasMedia
      * @param  Builder<Product>  $query
      * @return Builder<Product>
      */
-    public function scopeAvailable(Builder $query): Builder
+    #[Scope]
+    public function available(Builder $query): Builder
     {
         return $query->whereNotNull('available_at')
             ->where('available_at', '<=', now());
@@ -139,7 +162,8 @@ class Product extends Model implements HasMedia
      * @param  Builder<Product>  $query
      * @return Builder<Product>
      */
-    public function scopeFeatured(Builder $query): Builder
+    #[Scope]
+    public function featured(Builder $query): Builder
     {
         return $query->whereNotNull('featured_at')
             ->where('featured_at', '<=', now());

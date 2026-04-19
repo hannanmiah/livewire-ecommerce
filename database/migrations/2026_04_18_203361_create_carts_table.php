@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2)->default(0);
 
             $table->json('meta')->nullable();
+            $table->userstamps();
             $table->timestamps();
         });
     }

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->dateTime('featured_at')->nullable();
+
+            $table->userstamps();
             $table->timestamps();
         });
     }

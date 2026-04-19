@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('position')->nullable();
             $table->dateTime('featured_at')->nullable();
+
+            $table->userstamps();
             $table->timestamps();
         });
     }

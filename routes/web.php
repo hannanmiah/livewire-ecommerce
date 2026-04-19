@@ -29,7 +29,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('account/reviews', 'pages::account.reviews')->name('account.reviews');
 
     // Dashboard (keep existing)
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        if ($user?->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        $intended = session('url.intended');
+        $intendedPath = is_string($intended) ? parse_url($intended, PHP_URL_PATH) : null;
+
+        if (is_string($intendedPath) && str_starts_with($intendedPath, '/admin')) {
+            session()->forget('url.intended');
+        }
+
+        return redirect()->intended(route('account.orders'));
+    })->name('dashboard');
 });
 
 require __DIR__.'/settings.php';

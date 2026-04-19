@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('postal_code')->nullable();
             $table->string('country');
             $table->boolean('is_default')->default(false);
+            $table->userstamps();
             $table->timestamps();
         });
     }

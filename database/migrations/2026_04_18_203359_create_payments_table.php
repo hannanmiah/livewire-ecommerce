@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
             $table->string('transaction_id')->nullable();
             $table->timestamp('paid_at')->nullable();
-
+            $table->userstamps();
             $table->timestamps();
         });
     }

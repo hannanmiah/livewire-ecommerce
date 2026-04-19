@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->dateTime('featured_at')->nullable();
             $table->dateTime('available_at')->nullable();
+            $table->userstamps();
             $table->timestamps();
         });
     }

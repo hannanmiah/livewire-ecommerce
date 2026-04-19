@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->timestamp('used_at')->nullable();
+            $table->userstamps();
             $table->timestamps();
         });
     }

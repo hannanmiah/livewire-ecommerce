@@ -27,7 +27,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
 
             $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete();
-
+            $table->userstamps();
             $table->timestamps();
         });
     }

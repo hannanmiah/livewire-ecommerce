@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('used_count')->default(0);
 
             $table->timestamp('expires_at')->nullable();
+            $table->userstamps();
             $table->timestamps();
         });
     }

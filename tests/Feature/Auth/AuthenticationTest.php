@@ -65,3 +65,13 @@ test('users can logout', function () {
 
     $this->assertGuest();
 });
+
+test('non-admin users are not redirected to intended admin urls from dashboard', function () {
+    $user = User::factory()->create(['role' => 'customer']);
+
+    $response = $this->actingAs($user)
+        ->withSession(['url.intended' => route('admin.dashboard')])
+        ->get(route('dashboard'));
+
+    $response->assertRedirect(route('account.orders'));
+});

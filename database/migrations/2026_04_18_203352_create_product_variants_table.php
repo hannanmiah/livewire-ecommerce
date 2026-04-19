@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('sale_price', 10, 2)->nullable();
             $table->decimal('weight', 8, 2)->nullable();
+            $table->userstamps();
             $table->timestamps();
         });
     }

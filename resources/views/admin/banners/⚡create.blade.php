@@ -112,7 +112,7 @@ class extends Component {
                     hover:file:bg-zinc-200 dark:hover:file:bg-zinc-600" />
                 <flux:error name="image" />
 
-                @if ($image)
+                @if ($image && method_exists($image, 'isPreviewable') && $image->isPreviewable())
                     <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="mt-2 h-24 w-40 rounded object-cover" />
                 @endif
             </div>

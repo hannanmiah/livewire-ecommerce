@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 #[Fillable(['category', 'title', 'slug', 'link', 'description', 'position', 'featured_at'])]
 class Banner extends Model implements HasMedia
@@ -50,10 +52,29 @@ class Banner extends Model implements HasMedia
     }
 
     /**
+     * Register media conversions
+     */
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(300)
+            ->height(200)
+            ->sharpen(10);
+    }
+
+    /**
+     * Image attribute
+     */
+    public function image(): Attribute
+    {
+        return Attribute::get(fn () => $this->getFirstMediaUrl())->shouldCache();
+    }
+
+    /**
      * Determine if the banner is featured.
      */
-    public function getIsFeaturedAttribute(): bool
+    public function isFeatured(): Attribute
     {
-        return $this->featured_at !== null && $this->featured_at->isPast();
+        return Attribute::get(fn () => $this->featured_at !== null && $this->featured_at->isPast())->shouldCache();
     }
 }

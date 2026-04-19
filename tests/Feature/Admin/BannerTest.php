@@ -10,7 +10,7 @@ test('admin can view banners index', function () {
     Banner::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.banners.index'))
+        ->get(route('admin::banners.index'))
         ->assertSuccessful()
         ->assertSee('Banners');
 });
@@ -19,7 +19,7 @@ test('admin can view create banner page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.banners.create'))
+        ->get(route('admin::banners.create'))
         ->assertSuccessful()
         ->assertSee('Create Banner');
 });
@@ -30,7 +30,7 @@ test('admin can create a banner with image', function () {
     $image = UploadedFile::fake()->image('banner.jpg');
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.create')
+        ->test('admin::banners.create')
         ->set('title', 'Test Banner')
         ->set('category', 'home')
         ->set('position', 'hero')
@@ -50,7 +50,7 @@ test('admin can create a featured banner with image', function () {
     $image = UploadedFile::fake()->image('banner.jpg');
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.create')
+        ->test('admin::banners.create')
         ->set('title', 'Featured Banner')
         ->set('category', 'home')
         ->set('is_featured', true)
@@ -64,7 +64,7 @@ test('banner creation requires a title', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.create')
+        ->test('admin::banners.create')
         ->set('title', '')
         ->set('category', 'home')
         ->call('save')
@@ -75,7 +75,7 @@ test('banner creation requires a valid category', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.create')
+        ->test('admin::banners.create')
         ->set('title', 'Test Banner')
         ->set('category', 'invalid')
         ->call('save')
@@ -86,7 +86,7 @@ test('banner creation requires an image', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.create')
+        ->test('admin::banners.create')
         ->set('title', 'Test Banner')
         ->set('category', 'home')
         ->call('save')
@@ -98,7 +98,7 @@ test('admin can view edit banner page', function () {
     $banner = Banner::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.banners.edit', $banner))
+        ->get(route('admin::banners.edit', $banner))
         ->assertSuccessful()
         ->assertSee('Edit Banner');
 });
@@ -108,7 +108,7 @@ test('admin can update a banner', function () {
     $banner = Banner::factory()->create(['title' => 'Old Title']);
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.edit', ['banner' => $banner])
+        ->test('admin::banners.edit', ['banner' => $banner])
         ->set('title', 'Updated Title')
         ->call('save');
 
@@ -120,9 +120,9 @@ test('admin can delete a banner from edit page', function () {
     $banner = Banner::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.edit', ['banner' => $banner])
+        ->test('admin::banners.edit', ['banner' => $banner])
         ->call('delete')
-        ->assertRedirect(route('admin.banners.index'));
+        ->assertRedirect(route('admin::banners.index'));
 
     expect(Banner::find($banner->id))->toBeNull();
 });
@@ -132,7 +132,7 @@ test('admin can delete a banner from index page', function () {
     $banner = Banner::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.banners.index')
+        ->test('admin::banners.index')
         ->call('delete', $banner->id);
 
     expect(Banner::find($banner->id))->toBeNull();
@@ -144,7 +144,7 @@ test('banners index can filter by category', function () {
     Banner::factory()->create(['category' => 'sidebar', 'title' => 'Sidebar Banner']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.banners.index')
+        ->test('admin::banners.index')
         ->set('filter_category', 'home');
 
     $component->assertSee('Home Banner');
@@ -157,7 +157,7 @@ test('banners index can filter by position', function () {
     Banner::factory()->create(['position' => 'home_middle', 'title' => 'Middle Banner']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.banners.index')
+        ->test('admin::banners.index')
         ->set('filter_position', 'hero');
 
     $component->assertSee('Hero Banner');

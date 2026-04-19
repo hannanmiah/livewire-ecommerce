@@ -9,7 +9,7 @@ test('admin can view orders index', function () {
     Order::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.orders.index'))
+        ->get(route('admin::orders.index'))
         ->assertSuccessful()
         ->assertSee('Orders');
 });
@@ -19,7 +19,7 @@ test('admin can view order detail page', function () {
     $order = Order::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.orders.show', $order))
+        ->get(route('admin::orders.show', $order))
         ->assertSuccessful()
         ->assertSee($order->order_number);
 });
@@ -29,7 +29,7 @@ test('admin can update order status', function () {
     $order = Order::factory()->create(['status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('status', 'paid')
         ->call('updateStatus');
 
@@ -41,7 +41,7 @@ test('admin can update shipping status', function () {
     $order = Order::factory()->create(['shipping_status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('shipping_status', 'shipped')
         ->call('updateShippingStatus');
 
@@ -53,7 +53,7 @@ test('admin can update order status to completed', function () {
     $order = Order::factory()->create(['status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('status', 'completed')
         ->call('updateStatus');
 
@@ -65,7 +65,7 @@ test('admin can update order status to cancelled', function () {
     $order = Order::factory()->create(['status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('status', 'cancelled')
         ->call('updateStatus');
 
@@ -77,7 +77,7 @@ test('admin can update shipping status to delivered', function () {
     $order = Order::factory()->create(['shipping_status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('shipping_status', 'delivered')
         ->call('updateShippingStatus');
 
@@ -89,7 +89,7 @@ test('order status validation rejects invalid values', function () {
     $order = Order::factory()->create(['status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('status', 'invalid_status')
         ->call('updateStatus')
         ->assertHasErrors(['status' => 'in']);
@@ -100,7 +100,7 @@ test('shipping status validation rejects invalid values', function () {
     $order = Order::factory()->create(['shipping_status' => 'pending']);
 
     Livewire::actingAs($admin)
-        ->test('admin.orders.show', ['order' => $order])
+        ->test('admin::orders.show', ['order' => $order])
         ->set('shipping_status', 'invalid_status')
         ->call('updateShippingStatus')
         ->assertHasErrors(['shipping_status' => 'in']);
@@ -112,7 +112,7 @@ test('orders index can search by order number', function () {
     Order::factory()->create(['order_number' => 'ORD-OTHER99999']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.orders.index')
+        ->test('admin::orders.index')
         ->set('search', 'TEST12345');
 
     $component->assertSee('ORD-TEST12345');
@@ -125,7 +125,7 @@ test('orders index can filter by status', function () {
     Order::factory()->create(['status' => 'completed']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.orders.index')
+        ->test('admin::orders.index')
         ->set('filter_status', 'pending');
 
     $component->assertSee('Pending');
@@ -137,7 +137,7 @@ test('orders index can filter by payment status', function () {
     Order::factory()->create(['payment_status' => 'paid']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.orders.index')
+        ->test('admin::orders.index')
         ->set('filter_payment_status', 'paid');
 
     $component->assertSee('Paid');

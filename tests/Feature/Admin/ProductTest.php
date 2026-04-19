@@ -14,7 +14,7 @@ test('admin can view products index', function () {
     Product::factory()->count(3)->create(['brand_id' => $brand->id]);
 
     $this->actingAs($admin)
-        ->get(route('admin.products.index'))
+        ->get(route('admin::products.index'))
         ->assertSuccessful()
         ->assertSee('Products');
 });
@@ -23,7 +23,7 @@ test('admin can view create product page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.products.create'))
+        ->get(route('admin::products.create'))
         ->assertSuccessful()
         ->assertSee('Create Product');
 });
@@ -34,7 +34,7 @@ test('admin can create product with variant', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.products.create')
+        ->test('admin::products.create')
         ->set('name', 'Test Product')
         ->set('description', 'A test product description')
         ->set('category_id', $category->id)
@@ -43,7 +43,7 @@ test('admin can create product with variant', function () {
         ->set('variants.0.price', 29.99)
         ->set('variants.0.stock_quantity', 10)
         ->call('save')
-        ->assertRedirect(route('admin.products.index'));
+        ->assertRedirect(route('admin::products.index'));
 
     $product = Product::first();
     expect($product)->name->toBe('Test Product');
@@ -64,7 +64,7 @@ test('admin can create a featured product', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.products.create')
+        ->test('admin::products.create')
         ->set('name', 'Featured Product')
         ->set('brand_id', $brand->id)
         ->set('is_featured', true)
@@ -81,7 +81,7 @@ test('product creation requires a name', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.products.create')
+        ->test('admin::products.create')
         ->set('name', '')
         ->set('brand_id', $brand->id)
         ->set('variants.0.sku', 'SKU-TEST')
@@ -95,7 +95,7 @@ test('product creation requires a brand', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.products.create')
+        ->test('admin::products.create')
         ->set('name', 'Test Product')
         ->set('brand_id', null)
         ->set('variants.0.sku', 'SKU-TEST')
@@ -110,7 +110,7 @@ test('product creation requires at least one variant', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.products.create')
+        ->test('admin::products.create')
         ->set('name', 'Test Product')
         ->set('brand_id', $brand->id)
         ->set('variants', [])
@@ -124,7 +124,7 @@ test('product variant requires a unique sku', function () {
     ProductVariant::factory()->create(['sku' => 'SKU-DUPLICATE']);
 
     Livewire::actingAs($admin)
-        ->test('admin.products.create')
+        ->test('admin::products.create')
         ->set('name', 'Test Product')
         ->set('brand_id', $brand->id)
         ->set('variants.0.sku', 'SKU-DUPLICATE')
@@ -140,7 +140,7 @@ test('admin can view edit product page', function () {
     ProductVariant::factory()->create(['product_id' => $product->id]);
 
     $this->actingAs($admin)
-        ->get(route('admin.products.edit', $product))
+        ->get(route('admin::products.edit', $product))
         ->assertSuccessful()
         ->assertSee('Edit Product');
 });
@@ -153,14 +153,14 @@ test('admin can update a product', function () {
     Stock::factory()->create(['variant_id' => $variant->id]);
 
     Livewire::actingAs($admin)
-        ->test('admin.products.edit', ['product' => $product])
+        ->test('admin::products.edit', ['product' => $product])
         ->set('name', 'Updated Name')
         ->set('brand_id', $brand->id)
         ->set('variants.0.sku', $variant->sku)
         ->set('variants.0.price', 39.99)
         ->set('variants.0.stock_quantity', 20)
         ->call('save')
-        ->assertRedirect(route('admin.products.index'));
+        ->assertRedirect(route('admin::products.index'));
 
     expect($product->fresh())->name->toBe('Updated Name');
 });
@@ -171,9 +171,9 @@ test('admin can delete a product from edit page', function () {
     ProductVariant::factory()->create(['product_id' => $product->id]);
 
     Livewire::actingAs($admin)
-        ->test('admin.products.edit', ['product' => $product])
+        ->test('admin::products.edit', ['product' => $product])
         ->call('delete')
-        ->assertRedirect(route('admin.products.index'));
+        ->assertRedirect(route('admin::products.index'));
 
     expect(Product::find($product->id))->toBeNull();
 });
@@ -183,7 +183,7 @@ test('admin can delete a product from index page', function () {
     $product = Product::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.products.index')
+        ->test('admin::products.index')
         ->call('delete', $product->id);
 
     expect(Product::find($product->id))->toBeNull();
@@ -195,7 +195,7 @@ test('products index can search by name', function () {
     Product::factory()->create(['name' => 'Running Shoes']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.products.index')
+        ->test('admin::products.index')
         ->set('search', 'Laptop');
 
     $component->assertSee('Laptop Pro');
@@ -209,7 +209,7 @@ test('products index can filter by category', function () {
     Product::factory()->create(['name' => 'Shoes']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.products.index')
+        ->test('admin::products.index')
         ->set('filter_category', $category->id);
 
     $component->assertSee('Laptop');
@@ -223,7 +223,7 @@ test('products index can filter by brand', function () {
     Product::factory()->create(['name' => 'Adidas Shoe']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.products.index')
+        ->test('admin::products.index')
         ->set('filter_brand', $brand->id);
 
     $component->assertSee('Nike Shoe');
@@ -238,13 +238,13 @@ test('admin can add additional variant to product', function () {
     Stock::factory()->create(['variant_id' => $variant->id]);
 
     Livewire::actingAs($admin)
-        ->test('admin.products.edit', ['product' => $product])
+        ->test('admin::products.edit', ['product' => $product])
         ->call('addVariant')
         ->set('variants.1.sku', 'SKU-NEW-001')
         ->set('variants.1.price', 15.99)
         ->set('variants.1.stock_quantity', 5)
         ->call('save')
-        ->assertRedirect(route('admin.products.index'));
+        ->assertRedirect(route('admin::products.index'));
 
     expect($product->fresh()->variants)->toHaveCount(2);
 });
@@ -259,10 +259,10 @@ test('admin can remove a variant from product when more than one exists', functi
     Stock::factory()->create(['variant_id' => $variant2->id]);
 
     Livewire::actingAs($admin)
-        ->test('admin.products.edit', ['product' => $product])
+        ->test('admin::products.edit', ['product' => $product])
         ->call('removeVariant', 0)
         ->call('save')
-        ->assertRedirect(route('admin.products.index'));
+        ->assertRedirect(route('admin::products.index'));
 
     expect($product->fresh()->variants)->toHaveCount(1);
 });

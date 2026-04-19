@@ -9,7 +9,7 @@ test('admin can view coupons index', function () {
     Coupon::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.coupons.index'))
+        ->get(route('admin::coupons.index'))
         ->assertSuccessful()
         ->assertSee('Coupons');
 });
@@ -18,7 +18,7 @@ test('admin can view create coupon page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.coupons.create'))
+        ->get(route('admin::coupons.create'))
         ->assertSuccessful()
         ->assertSee('Create Coupon');
 });
@@ -27,12 +27,12 @@ test('admin can create a fixed coupon', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'SAVE10')
         ->set('type', 'fixed')
         ->set('value', 10)
         ->call('save')
-        ->assertRedirect(route('admin.coupons.edit', Coupon::first()));
+        ->assertRedirect(route('admin::coupons.edit', Coupon::first()));
 
     $coupon = Coupon::first();
     expect($coupon)->code->toBe('SAVE10');
@@ -44,7 +44,7 @@ test('admin can create a percent coupon', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'PERCENT20')
         ->set('type', 'percent')
         ->set('value', 20)
@@ -59,7 +59,7 @@ test('coupon creation uppercases the code', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'lowercase')
         ->set('type', 'fixed')
         ->set('value', 5)
@@ -72,7 +72,7 @@ test('admin can create coupon with all options', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'FULLCOUPON')
         ->set('type', 'fixed')
         ->set('value', 15)
@@ -92,7 +92,7 @@ test('coupon creation requires a code', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', '')
         ->set('type', 'fixed')
         ->set('value', 10)
@@ -105,7 +105,7 @@ test('coupon creation requires a unique code', function () {
     Coupon::factory()->create(['code' => 'EXISTS']);
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'EXISTS')
         ->set('type', 'fixed')
         ->set('value', 10)
@@ -117,7 +117,7 @@ test('coupon creation requires a valid type', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'TEST')
         ->set('type', 'invalid')
         ->set('value', 10)
@@ -129,7 +129,7 @@ test('coupon creation requires a value', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.create')
+        ->test('admin::coupons.create')
         ->set('code', 'TEST')
         ->set('type', 'fixed')
         ->set('value', '')
@@ -142,7 +142,7 @@ test('admin can view edit coupon page', function () {
     $coupon = Coupon::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.coupons.edit', $coupon))
+        ->get(route('admin::coupons.edit', $coupon))
         ->assertSuccessful()
         ->assertSee('Edit Coupon');
 });
@@ -152,7 +152,7 @@ test('admin can update a coupon', function () {
     $coupon = Coupon::factory()->create(['code' => 'OLD', 'value' => 5]);
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.edit', ['coupon' => $coupon])
+        ->test('admin::coupons.edit', ['coupon' => $coupon])
         ->set('code', 'UPDATED')
         ->set('value', 15)
         ->call('save');
@@ -166,9 +166,9 @@ test('admin can delete a coupon from edit page', function () {
     $coupon = Coupon::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.edit', ['coupon' => $coupon])
+        ->test('admin::coupons.edit', ['coupon' => $coupon])
         ->call('delete')
-        ->assertRedirect(route('admin.coupons.index'));
+        ->assertRedirect(route('admin::coupons.index'));
 
     expect(Coupon::find($coupon->id))->toBeNull();
 });
@@ -178,7 +178,7 @@ test('admin can delete a coupon from index page', function () {
     $coupon = Coupon::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.coupons.index')
+        ->test('admin::coupons.index')
         ->call('delete', $coupon->id);
 
     expect(Coupon::find($coupon->id))->toBeNull();
@@ -190,7 +190,7 @@ test('coupons index can search by code', function () {
     Coupon::factory()->create(['code' => 'DISCOUNT50']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.coupons.index')
+        ->test('admin::coupons.index')
         ->set('search', 'SAVE20');
 
     $component->assertSee('SAVE20');
@@ -203,7 +203,7 @@ test('coupons index can filter by type', function () {
     Coupon::factory()->percent()->create();
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.coupons.index')
+        ->test('admin::coupons.index')
         ->set('filter_type', 'percent');
 
     $component->assertSee('Percent');

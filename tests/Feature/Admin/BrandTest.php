@@ -9,7 +9,7 @@ test('admin can view brands index', function () {
     Brand::factory()->count(3)->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.brands.index'))
+        ->get(route('admin::brands.index'))
         ->assertSuccessful()
         ->assertSee('Brands');
 });
@@ -18,7 +18,7 @@ test('admin can view create brand page', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.brands.create'))
+        ->get(route('admin::brands.create'))
         ->assertSuccessful()
         ->assertSee('Create Brand');
 });
@@ -27,10 +27,10 @@ test('admin can create a brand', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.create')
+        ->test('admin::brands.create')
         ->set('name', 'New Brand')
         ->call('save')
-        ->assertRedirect(route('admin.brands.edit', Brand::first()));
+        ->assertRedirect(route('admin::brands.edit', Brand::first()));
 
     expect(Brand::first())->name->toBe('New Brand');
 });
@@ -39,7 +39,7 @@ test('admin can create a featured brand', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.create')
+        ->test('admin::brands.create')
         ->set('name', 'Featured Brand')
         ->set('is_featured', true)
         ->call('save');
@@ -53,7 +53,7 @@ test('brand creation requires a name', function () {
     $admin = User::factory()->admin()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.create')
+        ->test('admin::brands.create')
         ->set('name', '')
         ->call('save')
         ->assertHasErrors(['name' => 'required']);
@@ -64,7 +64,7 @@ test('admin can view edit brand page', function () {
     $brand = Brand::factory()->create();
 
     $this->actingAs($admin)
-        ->get(route('admin.brands.edit', $brand))
+        ->get(route('admin::brands.edit', $brand))
         ->assertSuccessful()
         ->assertSee('Edit Brand');
 });
@@ -74,7 +74,7 @@ test('admin can update a brand', function () {
     $brand = Brand::factory()->create(['name' => 'Old Brand']);
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.edit', ['brand' => $brand])
+        ->test('admin::brands.edit', ['brand' => $brand])
         ->set('name', 'Updated Brand')
         ->call('save');
 
@@ -86,9 +86,9 @@ test('admin can delete a brand from edit page', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.edit', ['brand' => $brand])
+        ->test('admin::brands.edit', ['brand' => $brand])
         ->call('delete')
-        ->assertRedirect(route('admin.brands.index'));
+        ->assertRedirect(route('admin::brands.index'));
 
     expect(Brand::find($brand->id))->toBeNull();
 });
@@ -98,7 +98,7 @@ test('admin can delete a brand from index page', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.index')
+        ->test('admin::brands.index')
         ->call('delete', $brand->id);
 
     expect(Brand::find($brand->id))->toBeNull();
@@ -110,7 +110,7 @@ test('brands index can search by name', function () {
     Brand::factory()->create(['name' => 'Adidas']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.brands.index')
+        ->test('admin::brands.index')
         ->set('search', 'Nike');
 
     $component->assertSee('Nike');
@@ -123,7 +123,7 @@ test('brands index can filter by featured', function () {
     Brand::factory()->create(['name' => 'Regular Brand']);
 
     $component = Livewire::actingAs($admin)
-        ->test('admin.brands.index')
+        ->test('admin::brands.index')
         ->set('filter_featured', 'yes');
 
     $component->assertSee('Featured Brand');
@@ -135,7 +135,7 @@ test('updating brand requires a name', function () {
     $brand = Brand::factory()->create();
 
     Livewire::actingAs($admin)
-        ->test('admin.brands.edit', ['brand' => $brand])
+        ->test('admin::brands.edit', ['brand' => $brand])
         ->set('name', '')
         ->call('save')
         ->assertHasErrors(['name' => 'required']);

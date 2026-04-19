@@ -39,7 +39,7 @@ class extends Component {
 
         if ($success) {
             Flux::toast(variant: 'success', text: __('Payment successful!'));
-            $this->redirect(route('account.orders.show', $this->order), navigate: true);
+            $this->redirect(route('checkout.success', $this->order), navigate: true);
         } else {
             Flux::toast(variant: 'danger', text: __('Payment failed. Please try again.'));
         }
@@ -53,7 +53,7 @@ class extends Component {
     }
 }; ?>
 <div>
-    <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {{-- Breadcrumb --}}
         <nav class="mb-6 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
             <a href="{{ route('home') }}" wire:navigate class="hover:text-zinc-700 dark:hover:text-zinc-300">{{ __('Home') }}</a>
@@ -67,81 +67,12 @@ class extends Component {
             {{-- Payment Form --}}
             <div class="lg:col-span-3">
                 <div class="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
-                    <flux:heading size="lg" class="mb-6">{{ __('Payment Method') }}</flux:heading>
-
-                    <div class="space-y-3">
-                        {{-- Card --}}
-                        <label
-                            @class([
-                                'flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors',
-                                'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-700' => $payment_method === 'card',
-                                'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600' => $payment_method !== 'card',
-                            ])
-                        >
-                            <flux:radio wire:model.live="payment_method" value="card" name="payment_method" />
-                            <div class="flex items-center gap-3">
-                                <flux:icon icon="credit-card" class="size-5 text-zinc-500 dark:text-zinc-400" />
-                                <div>
-                                    <flux:text variant="strong">{{ __('Credit / Debit Card') }}</flux:text>
-                                    <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Pay with your card') }}</flux:text>
-                                </div>
-                            </div>
-                        </label>
-
-                        {{-- bKash --}}
-                        <label
-                            @class([
-                                'flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors',
-                                'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-700' => $payment_method === 'bkash',
-                                'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600' => $payment_method !== 'bkash',
-                            ])
-                        >
-                            <flux:radio wire:model.live="payment_method" value="bkash" name="payment_method" />
-                            <div class="flex items-center gap-3">
-                                <flux:icon icon="device-phone-mobile" class="size-5 text-zinc-500 dark:text-zinc-400" />
-                                <div>
-                                    <flux:text variant="strong">{{ __('bKash') }}</flux:text>
-                                    <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Pay with bKash mobile banking') }}</flux:text>
-                                </div>
-                            </div>
-                        </label>
-
-                        {{-- Bank Transfer --}}
-                        <label
-                            @class([
-                                'flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors',
-                                'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-700' => $payment_method === 'bank',
-                                'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600' => $payment_method !== 'bank',
-                            ])
-                        >
-                            <flux:radio wire:model.live="payment_method" value="bank" name="payment_method" />
-                            <div class="flex items-center gap-3">
-                                <flux:icon icon="building-library" class="size-5 text-zinc-500 dark:text-zinc-400" />
-                                <div>
-                                    <flux:text variant="strong">{{ __('Bank Transfer') }}</flux:text>
-                                    <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Pay via bank transfer') }}</flux:text>
-                                </div>
-                            </div>
-                        </label>
-
-                        {{-- Cash on Delivery --}}
-                        <label
-                            @class([
-                                'flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors',
-                                'border-zinc-900 bg-zinc-50 dark:border-zinc-100 dark:bg-zinc-700' => $payment_method === 'cash',
-                                'border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600' => $payment_method !== 'cash',
-                            ])
-                        >
-                            <flux:radio wire:model.live="payment_method" value="cash" name="payment_method" />
-                            <div class="flex items-center gap-3">
-                                <flux:icon icon="banknotes" class="size-5 text-zinc-500 dark:text-zinc-400" />
-                                <div>
-                                    <flux:text variant="strong">{{ __('Cash on Delivery') }}</flux:text>
-                                    <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">{{ __('Pay when you receive the order') }}</flux:text>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
+                    <flux:radio.group wire:model.live="payment_method" label="Payment Method" variant="cards" class="flex-col">
+                        <flux:radio value="cash" label="Cash" description="Pay when you receive the order" />
+                        <flux:radio value="bkash" label="Bkash" description="Pay with bKash mobile banking" />
+                        <flux:radio value="card" label="Card" description="Pay with your card" />
+                        <flux:radio value="bank" label="Bank Transfer" description="Pay via bank transfer" />
+                    </flux:radio.group>
 
                     <flux:error name="payment_method" />
 
@@ -182,12 +113,11 @@ class extends Component {
                     @endif
 
                     <div class="mt-6 space-y-3">
-                        <flux:button variant="primary" class="w-full" wire:click="pay" wire:loading.attr="disabled">
-                            <flux:icon icon="lock-closed" class="size-4" />
+                        <flux:button icon="lock-closed" variant="primary" class="w-full" wire:click="pay" wire:loading.attr="disabled">
                             {{ __('Pay $:amount', ['amount' => number_format((float) $order->total, 2)]) }}
                         </flux:button>
 
-                        <flux:button variant="ghost" size="sm" class="w-full text-red-500 dark:text-red-400" wire:click="cancelOrder" wire:loading.attr="disabled">
+                        <flux:button icon="x-mark" variant="outline" color="red" class="w-full" wire:click="cancelOrder" wire:loading.attr="disabled">
                             {{ __('Cancel Order') }}
                         </flux:button>
                     </div>

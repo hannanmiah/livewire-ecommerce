@@ -64,10 +64,16 @@ class OrderService
                 $couponService->recordUsage($cart->coupon, $user, $order);
             }
 
-            $user->addresses()->create(array_merge($shippingAddress, ['type' => 'shipping']));
+            $user->addresses()->updateOrCreate(
+                array_merge($shippingAddress, ['type' => 'shipping']),
+                ['is_default' => ! $user->addresses()->where('type', 'shipping')->exists()]
+            );
 
             if ($billingAddress) {
-                $user->addresses()->create(array_merge($billingAddress, ['type' => 'billing']));
+                $user->addresses()->updateOrCreate(
+                    array_merge($billingAddress, ['type' => 'billing']),
+                    ['is_default' => ! $user->addresses()->where('type', 'billing')->exists()]
+                );
             }
 
             Payment::create([
@@ -125,10 +131,16 @@ class OrderService
                 'variant_attributes' => $variant->attributeValues->mapWithKeys(fn ($av) => [$av->attribute->name => $av->value])->toArray(),
             ]);
 
-            $user->addresses()->create(array_merge($shippingAddress, ['type' => 'shipping']));
+            $user->addresses()->updateOrCreate(
+                array_merge($shippingAddress, ['type' => 'shipping']),
+                ['is_default' => ! $user->addresses()->where('type', 'shipping')->exists()]
+            );
 
             if ($billingAddress) {
-                $user->addresses()->create(array_merge($billingAddress, ['type' => 'billing']));
+                $user->addresses()->updateOrCreate(
+                    array_merge($billingAddress, ['type' => 'billing']),
+                    ['is_default' => ! $user->addresses()->where('type', 'billing')->exists()]
+                );
             }
 
             Payment::create([

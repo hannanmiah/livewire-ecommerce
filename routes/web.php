@@ -19,6 +19,7 @@ Route::livewire('/cart', 'pages::cart')->name('cart');
 Route::middleware(['auth', 'verified'])->group(function () {
     // Checkout
     Route::livewire('/checkout', 'pages::checkout')->name('checkout');
+    Route::livewire('/checkout/success/{order}', 'pages::checkout.success')->name('checkout.success');
     Route::livewire('/checkout/{order}', 'pages::checkout.payment')->name('checkout.payment');
 
     // Customer Dashboard

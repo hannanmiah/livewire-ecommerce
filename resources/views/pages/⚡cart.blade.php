@@ -6,7 +6,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Shopping Cart')] class extends Component {
+new #[Title('Shopping Cart')]
+class extends Component {
     public string $couponCode = '';
 
     private CartService $cartService;

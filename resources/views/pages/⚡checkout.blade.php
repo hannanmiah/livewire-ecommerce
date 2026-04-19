@@ -9,7 +9,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Checkout')] class extends Component {
+new #[Title('Checkout')]
+class extends Component {
     public int $step = 1;
 
     // Shipping address

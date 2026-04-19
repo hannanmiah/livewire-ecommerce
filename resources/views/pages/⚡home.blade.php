@@ -339,7 +339,7 @@ new class extends Component {
                                 {{ $brand->products_count }} {{ Str::plural(__('product'), $brand->products_count) }}
                             </p>
                         </a>
-                    @endforeach>
+                    @endforeach
                 </div>
             </div>
         </section>

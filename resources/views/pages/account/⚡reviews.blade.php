@@ -6,7 +6,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('My Reviews')] class extends Component {
+new #[Title('My Reviews')]
+class extends Component {
     public ?int $editing_review_id = null;
 
     public int $edit_rating = 5;

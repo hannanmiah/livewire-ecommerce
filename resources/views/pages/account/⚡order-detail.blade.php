@@ -5,7 +5,8 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Order Details')] class extends Component {
+new #[Title('Order Details')]
+class extends Component {
     #[Locked]
     public Order $order;
 

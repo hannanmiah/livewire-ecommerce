@@ -6,7 +6,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('My Addresses')] class extends Component {
+new #[Title('My Addresses')]
+class extends Component {
     public ?int $editing_address_id = null;
 
     public string $type = 'shipping';

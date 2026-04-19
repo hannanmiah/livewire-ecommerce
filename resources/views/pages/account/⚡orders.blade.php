@@ -6,7 +6,8 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Title('My Orders')] class extends Component {
+new #[Title('My Orders')]
+class extends Component {
     use WithPagination;
 
     public ?string $filter_status = null;

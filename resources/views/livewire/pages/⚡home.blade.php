@@ -77,6 +77,7 @@ new class extends Component {
 }; ?>
 
 <x-layouts::app>
+<div>
     {{-- Section 1: Hero Banner Slider --}}
     @if($this->heroBanners->isNotEmpty())
         <section class="relative">
@@ -345,4 +346,5 @@ new class extends Component {
             </div>
         </section>
     @endif
+</div>
 </x-layouts::app>

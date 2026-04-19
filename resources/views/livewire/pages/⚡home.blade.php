@@ -8,7 +8,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title(config('app.name'))] class extends Component {
+new class extends Component {
     #[Computed]
     public function heroBanners()
     {

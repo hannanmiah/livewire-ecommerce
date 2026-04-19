@@ -8,19 +8,13 @@
         ->get();
 
     $cartCount = 0;
-    $cartItems = collect();
-    $cartTotal = 0;
-
     if (auth()->check()) {
-        $navCart = \App\Models\Cart::where('user_id', auth()->id())->with('items.variant.product')->first();
+        $navCart = \App\Models\Cart::where('user_id', auth()->id())->first();
     } else {
-        $navCart = \App\Models\Cart::where('session_id', session()->getId())->with('items.variant.product')->first();
+        $navCart = \App\Models\Cart::where('session_id', session()->getId())->first();
     }
-
     if ($navCart) {
-        $cartCount = $navCart->items->count();
-        $cartItems = $navCart->items->take(5);
-        $cartTotal = (float) $navCart->total;
+        $cartCount = $navCart->items()->count();
     }
 @endphp
 
@@ -71,80 +65,7 @@
         </form>
 
         {{-- Cart Dropdown --}}
-        <flux:dropdown position="bottom" align="end">
-            <flux:navbar.item class="!h-10 relative" icon="shopping-cart" :label="__('Cart')">
-                @if($cartCount > 0)
-                    <span class="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-zinc-900 text-xs font-bold text-white dark:bg-zinc-100 dark:text-zinc-900">
-                        {{ $cartCount }}
-                    </span>
-                @endif
-            </flux:navbar.item>
-
-            <flux:menu class="w-80 p-0">
-                <div class="px-4 py-3">
-                    <flux:heading size="sm">{{ __('Cart') }} ({{ $cartCount }})</flux:heading>
-                </div>
-
-                <flux:menu.separator />
-
-                @if($cartItems->isNotEmpty())
-                    <div class="max-h-64 overflow-y-auto">
-                        @foreach($cartItems as $item)
-                            @php $itemProduct = $item->variant->product; @endphp
-                            <div class="flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                                <div class="size-12 flex-shrink-0 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800">
-                                    @if($itemProduct->getFirstMediaUrl('thumbnail'))
-                                        <img src="{{ $itemProduct->getFirstMediaUrl('thumbnail') }}" alt="{{ $itemProduct->name }}" class="size-full object-cover" />
-                                    @else
-                                        <div class="flex size-full items-center justify-center">
-                                            <flux:icon icon="photo" class="size-4 text-zinc-300 dark:text-zinc-600" variant="micro" />
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="flex-1 overflow-hidden">
-                                    <flux:text class="truncate text-sm font-medium">{{ $itemProduct->name }}</flux:text>
-                                    <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">
-                                        {{ __('Qty: :quantity x $:price', ['quantity' => $item->quantity, 'price' => number_format((float) $item->price, 2)]) }}
-                                    </flux:text>
-                                </div>
-                                <flux:text class="text-sm font-medium">${{ number_format((float) $item->total, 2) }}</flux:text>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <flux:menu.separator />
-
-                    <div class="flex items-center justify-between px-4 py-3">
-                        <flux:text variant="strong" size="sm">{{ __('Subtotal') }}</flux:text>
-                        <flux:text variant="strong" size="sm">${{ number_format($cartTotal, 2) }}</flux:text>
-                    </div>
-
-                    <flux:menu.separator />
-
-                    <div class="space-y-2 p-4">
-                        <flux:button variant="primary" :href="route('cart')" wire:navigate class="w-full" size="sm">
-                            {{ __('View Cart') }}
-                        </flux:button>
-                        <flux:button variant="outline" :href="route('checkout')" wire:navigate class="w-full" size="sm">
-                            {{ __('Checkout') }}
-                        </flux:button>
-                    </div>
-                @else
-                    <div class="px-4 py-6 text-center">
-                        <flux:icon icon="shopping-cart" class="mx-auto mb-2 size-8 text-zinc-300 dark:text-zinc-600" />
-                        <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">{{ __('Your cart is empty') }}</flux:text>
-                    </div>
-
-                    <flux:menu.separator />
-
-                    <div class="p-4">
-                        <flux:button variant="outline" :href="route('products.index')" wire:navigate class="w-full" size="sm">
-                            {{ __('Continue Shopping') }}
-                        </flux:button>
-                    </div>
-                @endif
-            </flux:menu>
-        </flux:dropdown>
+        <livewire:cart-icon />
 
         @auth
             {{-- User Menu --}}

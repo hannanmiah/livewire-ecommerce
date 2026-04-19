@@ -116,7 +116,7 @@ class CartService
     {
         $cart = $this->getCartForContext($user, $sessionId);
 
-        return $cart ? $cart->items->count() : 0;
+        return $cart ? $cart->items()->count() : 0;
     }
 
     public function getCartForContext(?User $user = null, ?string $sessionId = null): ?Cart

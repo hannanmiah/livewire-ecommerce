@@ -30,6 +30,7 @@ class extends Component {
         }
 
         $this->cartService->updateItemQuantity($this->cart, $itemId, $quantity);
+        $this->dispatch('cart-updated');
         unset($this->cart);
     }
 
@@ -40,6 +41,7 @@ class extends Component {
         }
 
         $this->cartService->removeItem($this->cart, $itemId);
+        $this->dispatch('cart-updated');
         Flux::toast(variant: 'success', text: __('Item removed from cart.'));
         unset($this->cart);
     }
@@ -51,6 +53,7 @@ class extends Component {
         }
 
         if ($this->cartService->applyCoupon($this->cart, $this->couponCode)) {
+            $this->dispatch('cart-updated');
             Flux::toast(variant: 'success', text: __('Coupon applied.'));
             $this->reset('couponCode');
         } else {
@@ -67,6 +70,7 @@ class extends Component {
         }
 
         $this->cartService->removeCoupon($this->cart);
+        $this->dispatch('cart-updated');
         Flux::toast(variant: 'success', text: __('Coupon removed.'));
         unset($this->cart);
     }
@@ -78,6 +82,7 @@ class extends Component {
         }
 
         $this->cartService->clearCart($this->cart);
+        $this->dispatch('cart-updated');
         Flux::toast(variant: 'success', text: __('Cart cleared.'));
         unset($this->cart);
     }
@@ -155,7 +160,6 @@ class extends Component {
                                         />
                                         <flux:input
                                             type="number"
-                                            wire:model.live.debounce.500ms=""
                                             value="{{ $item->quantity }}"
                                             wire:change="updateQuantity({{ $item->id }}, $event.target.value)"
                                             min="1"

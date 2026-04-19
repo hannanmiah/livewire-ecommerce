@@ -2,6 +2,7 @@
 
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Services\CartService;
 use Flux\Flux;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,13 @@ new class extends Component {
 
     public string $reviewComment = '';
 
+    private CartService $cartService;
+
+    public function boot(CartService $cartService): void
+    {
+        $this->cartService = $cartService;
+    }
+
     public function mount(): void
     {
         $this->product->load([
@@ -41,6 +49,10 @@ new class extends Component {
     #[Computed]
     public function matchedVariant(): ?ProductVariant
     {
+        if ($this->variantAttributes->isEmpty()) {
+            return $this->product->variants->first();
+        }
+
         if (empty($this->selectedAttributes)) {
             return null;
         }
@@ -203,6 +215,11 @@ new class extends Component {
             return;
         }
 
+        $cart = $this->cartService->getOrCreateCart();
+        $this->cartService->addItem($cart, $variant->id, $this->quantity);
+
+        $this->dispatch('cart-updated');
+
         Flux::toast(variant: 'success', text: __('Added to cart!'));
     }
 
@@ -215,6 +232,17 @@ new class extends Component {
 
             return;
         }
+
+        if (!$variant->stock?->isInStock()) {
+            Flux::toast(variant: 'danger', text: __('This variant is out of stock.'));
+
+            return;
+        }
+
+        $cart = $this->cartService->getOrCreateCart();
+        $this->cartService->addItem($cart, $variant->id, $this->quantity);
+
+        $this->dispatch('cart-updated');
 
         $this->redirect(route('checkout'), navigate: true);
     }

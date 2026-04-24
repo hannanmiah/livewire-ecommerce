@@ -486,8 +486,7 @@ class extends Component {
                             <flux:button variant="ghost" wire:click="previousStep">
                                 {{ __('Back') }}
                             </flux:button>
-                            <flux:button variant="primary" wire:click="placeOrder" wire:loading.attr="disabled">
-                                <flux:icon icon="lock-closed" class="size-4"/>
+                            <flux:button icon="check" variant="primary" wire:click="placeOrder" wire:loading.attr="disabled">
                                 {{ __('Place Order') }}
                             </flux:button>
                         </div>

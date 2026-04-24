@@ -4,6 +4,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\CartService;
 use Flux\Flux;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
@@ -11,7 +12,8 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new class extends Component {
+new class extends Component
+{
     #[Locked]
     public Product $product;
 
@@ -32,7 +34,23 @@ new class extends Component {
 
     public function mount(): void
     {
-        $this->product->load([
+        $this->loadProduct();
+        // set default selected attributes to first variant's attributes
+        if ($this->defaultVariant) {
+            foreach ($this->defaultVariant->attributeValues as $av) {
+                $this->selectedAttributes[$av->attribute->name] = $av->value;
+            }
+        }
+    }
+
+    public function hydrate()
+    {
+        $this->loadProduct();
+    }
+
+    private function loadProduct(): void
+    {
+        $this->product->loadMissing([
             'brand',
             'category',
             'variants.stock',
@@ -47,13 +65,20 @@ new class extends Component {
     }
 
     #[Computed]
+    public function defaultVariant(): ?ProductVariant
+    {
+        return $this->product->variants->sortBy('price')->first();
+    }
+
+    #[Computed]
     public function matchedVariant(): ?ProductVariant
     {
+        // if no variant attributes, return first variant
         if ($this->variantAttributes->isEmpty()) {
-            return $this->product->variants->first();
+            return $this->defaultVariant;
         }
 
-        if (empty($this->selectedAttributes)) {
+        if (blank($this->selectedAttributes)) {
             return null;
         }
 
@@ -77,7 +102,7 @@ new class extends Component {
         $attributes = [];
 
         foreach ($this->product->variants as $variant) {
-            foreach ($variant->attributeValues as $av) {
+            $variant->attributeValues->each(function ($av) use (&$attributes) {
                 $name = $av->attribute->name;
 
                 if (!isset($attributes[$name])) {
@@ -85,7 +110,7 @@ new class extends Component {
                 }
 
                 $attributes[$name][$av->id] = $av->value;
-            }
+            });
         }
 
         return collect($attributes)->map->unique();
@@ -159,6 +184,7 @@ new class extends Component {
     #[Computed]
     public function priceRange(): array
     {
+
         $variants = $this->product->variants;
 
         if ($variants->isEmpty()) {
@@ -197,8 +223,8 @@ new class extends Component {
     {
         $variant = $this->matchedVariant;
 
-        if (!$variant) {
-            Flux::toast(variant: 'warning', text: __('Please select all options.'));
+        if (blank($variant)) {
+            Flux::toast(variant: 'warning', text: __('Variant is not available!'));
 
             return;
         }
@@ -227,8 +253,8 @@ new class extends Component {
     {
         $variant = $this->matchedVariant;
 
-        if (!$variant) {
-            Flux::toast(variant: 'warning', text: __('Please select all options.'));
+        if (blank($variant)) {
+            Flux::toast(variant: 'warning', text: __('Variant is not available'));
 
             return;
         }
@@ -282,18 +308,34 @@ new class extends Component {
     {
         $testAttributes = array_merge($this->selectedAttributes, [$attributeName => $value]);
 
-        return $this->product->variants
-            ->contains(function ($variant) use ($testAttributes) {
-                $variantAttrs = $variant->attributeValues->mapWithKeys(fn($av) => [$av->attribute->name => $av->value]);
+        $hasStrictMatch = $this->product->variants->contains(function (ProductVariant $variant) use ($testAttributes) {
+            $variantAttributes = $variant->attributeValues
+                ->mapWithKeys(fn ($attributeValue) => [$attributeValue->attribute->name => $attributeValue->value]);
 
-                foreach ($testAttributes as $attrName => $val) {
-                    if (($variantAttrs[$attrName] ?? null) !== $val) {
-                        return false;
-                    }
+            foreach ($testAttributes as $name => $selectedValue) {
+                if (($variantAttributes[$name] ?? null) !== $selectedValue) {
+                    return false;
                 }
+            }
 
-                return true;
-            });
+            return true;
+        });
+
+        if ($hasStrictMatch) {
+            return true;
+        }
+
+        return $this->product->variants->contains(function (ProductVariant $variant) use ($attributeName, $value) {
+            $variantAttributes = $variant->attributeValues
+                ->mapWithKeys(fn ($attributeValue) => [$attributeValue->attribute->name => $attributeValue->value]);
+
+            return ($variantAttributes[$attributeName] ?? null) === $value;
+        });
+    }
+
+    public function render(): View
+    {
+        return $this->view()->title($this->product->name);
     }
 }; ?>
 <div>
@@ -412,11 +454,11 @@ new class extends Component {
                     @if($variant)
                         <div class="flex items-baseline gap-2">
                             <span class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-                                ${{ number_format((float) $variant->effective_price, 2) }}
+                                {{ money($variant->effective_price) }}
                             </span>
                             @if($variant->is_on_sale)
                                 <span class="text-lg text-zinc-400 line-through">
-                                    ${{ number_format((float) $variant->price, 2) }}
+                                    {{ money($variant->price) }}
                                 </span>
                                 <flux:badge color="red" size="sm">{{ __('Sale') }}</flux:badge>
                             @endif
@@ -470,6 +512,7 @@ new class extends Component {
                                                     'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600' => ! $isSelected && $isAvailable,
                                                     'cursor-not-allowed border-zinc-200 bg-zinc-100 text-zinc-400 opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-600' => ! $isAvailable,
                                                 ])
+                                                class="data-loading:pointer-events-none"
                                         >
                                             {{ $value }}
                                         </button>

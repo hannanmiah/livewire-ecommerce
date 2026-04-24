@@ -353,66 +353,7 @@ class extends Component {
                 @if($this->products->count() > 0)
                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                         @foreach($this->products as $product)
-                            <a
-                                    href="{{ route('products.show', $product->slug) }}"
-                                    wire:navigate
-                                    wire:key="product-{{ $product->id }}"
-                                    class="group block rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800 overflow-hidden hover:shadow-lg transition-shadow"
-                            >
-                                {{-- Thumbnail --}}
-                                <div class="aspect-square bg-zinc-100 dark:bg-zinc-700 overflow-hidden">
-                                    @if($product->getFirstMediaUrl('thumbnail'))
-                                        <img
-                                                src="{{ $product->getFirstMediaUrl('thumbnail') }}"
-                                                alt="{{ $product->name }}"
-                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
-                                    @else
-                                        <div class="flex items-center justify-center w-full h-full text-zinc-400">
-                                            <flux:icon icon="photo" class="size-12"/>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                {{-- Info --}}
-                                <div class="p-3 md:p-4">
-                                    @if($product->brand)
-                                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-1">{{ $product->brand->name }}</p>
-                                    @endif
-
-                                    <h3 class="text-sm font-medium text-zinc-900 dark:text-zinc-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                        {{ $product->name }}
-                                    </h3>
-
-                                    @php
-                                        $variants = $product->variants;
-                                        $hasSale = $variants->contains(fn ($v) => $v->is_on_sale);
-                                        $minPrice = $variants->min('price');
-                                        $maxPrice = $variants->max('price');
-                                        $minSalePrice = $variants->whereNotNull('sale_price')->min('sale_price');
-                                    @endphp
-
-                                    <div class="mt-2">
-                                        @if($hasSale && $minSalePrice)
-                                            <span class="text-xs text-zinc-400 line-through">{{ number_format((float) $minPrice, 2) }}</span>
-                                            <span class="text-sm font-semibold text-red-600 dark:text-red-400">{{ __('From :price', ['price' => number_format((float) $minSalePrice, 2)]) }}</span>
-                                        @else
-                                            <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                                                @if($minPrice == $maxPrice)
-                                                    {{ number_format((float) $minPrice, 2) }}
-                                                @else
-                                                    {{ __('From :price', ['price' => number_format((float) $minPrice, 2)]) }}
-                                                @endif
-                                            </span>
-                                        @endif
-                                    </div>
-
-                                    @if($product->is_featured)
-                                        <flux:badge color="amber" size="sm"
-                                                    class="mt-2">{{ __('Featured') }}</flux:badge>
-                                    @endif
-                                </div>
-                            </a>
+                            <livewire:product-card :product="$product" :key="$product->id"/>
                         @endforeach
                     </div>
 

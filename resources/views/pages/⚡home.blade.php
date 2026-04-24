@@ -139,9 +139,11 @@ new class extends Component {
                              x-transition:leave-start="opacity-100"
                              x-transition:leave-end="opacity-0"
                              class="absolute inset-0">
-                            @if($bannerImage = $banner->getFirstMediaUrl('image'))
-                                <img src="{{ $bannerImage }}" alt="{{ $banner->title }}"
+                            @if(filled($banner->image))
+                                <img src="{{ $banner->image }}" alt="{{ $banner->title }}"
                                      class="h-full w-full object-cover"/>
+                            @else
+                                <div class="h-full w-full bg-gradient-to-br from-zinc-800 to-zinc-700"></div>
                             @endif
                             <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
                             <div class="absolute inset-0 flex items-center">
@@ -259,7 +261,7 @@ new class extends Component {
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
                     @foreach($this->featuredProducts as $product)
-                        <x-product-card :product="$product"/>
+                        <livewire:product-card :product="$product"/>
                     @endforeach
                 </div>
             </div>
@@ -296,7 +298,7 @@ new class extends Component {
 
                 <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
                     @foreach($this->newArrivals as $product)
-                        <x-product-card :product="$product"/>
+                        <livewire:product-card :product="$product"/>
                     @endforeach
                 </div>
             </div>

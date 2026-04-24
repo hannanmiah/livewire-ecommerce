@@ -21,7 +21,7 @@
         @fluxAppearance
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased flex flex-col">
-        <x-storefront-nav />
+        <livewire:storefront-nav />
 
         <div class="flex-1">
             {{ $slot }}

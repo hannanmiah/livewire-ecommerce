@@ -74,7 +74,7 @@ class Product extends Model implements HasMedia
      */
     public function thumbnail(): Attribute
     {
-        return Attribute::get(fn () => $this->getFirstMediaUrl('thumbnail') ?: null)->shouldCache();
+        return Attribute::get(fn () => $this->getFirstMediaUrl('thumbnail'))->shouldCache();
     }
 
     /**

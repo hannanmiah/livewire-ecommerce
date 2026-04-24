@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[Fillable(['product_id', 'sku', 'price', 'sale_price', 'weight'])]
 class ProductVariant extends Model
@@ -31,17 +32,17 @@ class ProductVariant extends Model
     /**
      * Get the effective price (sale price if on sale, otherwise regular price).
      */
-    public function getEffectivePriceAttribute(): string
+    public function effectivePrice(): Attribute
     {
-        return $this->sale_price ?? $this->price;
+        return Attribute::get(fn() => $this->sale_price ?? $this->price)->shouldCache();
     }
 
     /**
      * Determine if the variant is on sale.
      */
-    public function getIsOnSaleAttribute(): bool
+    public function isOnSale(): Attribute
     {
-        return $this->sale_price !== null && $this->sale_price < $this->price;
+        return Attribute::get(fn() => $this->sale_price && $this->sale_price < $this->price)->shouldCache();
     }
 
     /**

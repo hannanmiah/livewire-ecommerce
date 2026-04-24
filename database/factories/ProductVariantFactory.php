@@ -22,7 +22,7 @@ class ProductVariantFactory extends Factory
             'product_id' => Product::factory(),
             'sku' => fake()->unique()->bothify('SKU-####??'),
             'price' => fake()->randomFloat(2, 10, 500),
-            'sale_price' => null,
+            'sale_price' => $this->faker->randomFloat(2, 10, 500),
             'weight' => fake()->randomFloat(2, 0.1, 10),
         ];
     }

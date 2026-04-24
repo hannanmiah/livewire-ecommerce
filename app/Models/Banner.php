@@ -67,7 +67,7 @@ class Banner extends Model implements HasMedia
      */
     public function image(): Attribute
     {
-        return Attribute::get(fn () => $this->getFirstMediaUrl())->shouldCache();
+        return Attribute::get(fn () => $this->getFirstMediaUrl('image'))->shouldCache();
     }
 
     /**
